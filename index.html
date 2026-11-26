@@ -1,0 +1,1817 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ONEX — Rasmiy Elektr Asboblar Do'koni</title>
+  <meta name="description" content="ONEX rasmiy elektr asboblar do'koni va katalogi." />
+  <meta property="og:title" content="ONEX — Elektr Asboblar Do'koni" />
+  <meta property="og:description" content="ONEX rasmiy elektr asboblar do'koni va katalogi." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0f0f11;
+      --bg-card: #1a1a1e;
+      --bg-elevated: #232329;
+      --border-subtle: #2a2a30;
+      --border-hover: #3a3a44;
+      --accent: #ff6b00;
+      --accent-hover: #ff8124;
+      --accent-glow: rgba(255, 107, 0, 0.25);
+      --text-primary: #f5f5f7;
+      --text-secondary: #9e9ea8;
+      --text-muted: #6c6c76;
+      --danger: #ff453a;
+      --success: #32d74b;
+      --font-display: 'Outfit', system-ui, sans-serif;
+      --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: calc(var(--tg-content-safe-area-inset-top, 48px) + var(--tg-safe-area-inset-top, 0px));
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      background-color: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans);
+      font-size: 15px; line-height: 1.4; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden; min-height: 100dvh;
+    }
+    button, input, textarea { font-family: inherit; color: inherit; outline: none; }
+    button { cursor: pointer; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+
+    /* Header */
+    .app-header {
+      position: sticky; top: 0; z-index: 30; background: rgba(15, 15, 17, 0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(42, 42, 48, 0.7); padding-top: var(--safe-top);
+    }
+    .header-inner { max-width: 1152px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; background: none; border: none; padding: 0; text-align: left; min-width: 0; }
+    .brand-logo {
+      width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #ff6b00 0%, #e05200 100%);
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px var(--accent-glow); flex-shrink: 0;
+    }
+    .brand-logo svg { width: 20px; height: 20px; fill: #ffffff; }
+    .brand-name { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: 0.05em; color: #ffffff; white-space: nowrap; flex-shrink: 0; }
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .lang-switch { height: 44px; display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-card); }
+    .lang-icon { display: none; width: 14px; height: 14px; margin: 0 4px 0 6px; stroke: var(--text-secondary); fill: none; stroke-width: 2; flex-shrink: 0; }
+    .lang-btn {
+      font-family: var(--font-display); height: 34px; min-width: 38px; padding: 0 10px; border: none; border-radius: 8px;
+      background: transparent; color: var(--text-secondary); font-size: 12px; font-weight: 700; white-space: nowrap;
+      transition: background 0.16s ease, color 0.16s ease;
+    }
+    .lang-btn:hover { color: #ffffff; }
+    .lang-btn.active { background: var(--accent); color: #ffffff; box-shadow: 0 2px 8px var(--accent-glow); }
+    .header-cart-btn {
+      position: relative; width: 44px; height: 44px; border-radius: 12px; background: var(--bg-card);
+      border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease; flex-shrink: 0;
+    }
+    .header-cart-btn:active { transform: scale(0.95); }
+    .header-cart-btn svg { width: 20px; height: 20px; stroke: var(--text-primary); fill: none; stroke-width: 1.9; }
+    .cart-badge {
+      font-family: var(--font-display); position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px;
+      border-radius: 99px; background: var(--accent); color: #ffffff; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-primary);
+      opacity: 0; transform: scale(0.5); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .cart-badge.visible { opacity: 1; transform: scale(1); }
+
+    /* Main Container */
+    .container { max-width: 1152px; margin: 0 auto; }
+    .page-head { padding: 18px 16px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .back-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+    .back-btn {
+      min-height: 40px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 12px;
+      border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-primary); font-size: 13px;
+      font-weight: 600; white-space: nowrap; transition: border-color 0.16s ease, background 0.16s ease;
+    }
+    .back-btn:hover { border-color: var(--border-hover); background: var(--bg-elevated); }
+    .back-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; flex-shrink: 0; }
+    .store-subtitle { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+    .catalog-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .catalog-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+    .catalog-count { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; }
+
+    /* Shared Grid */
+    .cards-grid { padding: 0 16px calc(176px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+    /* Category Card */
+    .category-card {
+      position: relative; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px;
+      padding: 10px; display: flex; flex-direction: column; text-align: left; transition: border-color 0.2s ease;
+      will-change: transform, opacity, filter;
+    }
+    .category-card:hover { border-color: var(--accent); }
+    .category-img-box { width: 100%; aspect-ratio: 1 / 1; background: #ffffff; border-radius: 12px; overflow: hidden; position: relative; padding: 6px; }
+    .category-img-box img { width: 100%; height: 100%; object-fit: contain; display: block; color: #1a1a1e; transition: transform 0.3s ease; }
+    .category-card:hover .category-img-box img { transform: scale(1.04); }
+    .category-body { padding-top: 12px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
+    .category-count { font-size: 11px; font-weight: 600; color: var(--accent); }
+    .category-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.25; flex: 1; }
+    .category-desc { font-size: 11.5px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .category-enter { margin-top: 6px; display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid rgba(42, 42, 48, 0.7); font-size: 12px; font-weight: 700; color: #ffffff; }
+    .category-enter svg { width: 15px; height: 15px; stroke: var(--accent); fill: none; stroke-width: 2.3; transition: transform 0.16s ease; }
+    .category-card:hover .category-enter svg { transform: translateX(3px); }
+
+    /* Product Card */
+    .product-card {
+      position: relative; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px;
+      padding: 10px; display: flex; flex-direction: column; cursor: pointer; transition: border-color 0.2s ease;
+      will-change: transform, opacity, filter;
+    }
+    .product-card:hover { border-color: var(--border-hover); }
+
+    /* Stock Badge */
+    .stock-badge {
+      align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px;
+      border-radius: 8px; font-size: 10.5px; font-weight: 700; line-height: 1.25; margin-bottom: 8px;
+      letter-spacing: 0.01em; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+    }
+    .stock-badge.in-stock { background: rgba(50, 215, 75, 0.14); color: var(--success); border: 1px solid rgba(50, 215, 75, 0.28); }
+    .stock-badge.low-stock { background: rgba(255, 107, 0, 0.14); color: var(--accent-hover); border: 1px solid rgba(255, 107, 0, 0.32); }
+    .stock-badge.out-of-stock { background: rgba(108, 108, 118, 0.22); color: var(--text-secondary); border: 1px solid rgba(108, 108, 118, 0.38); }
+    .product-card.is-out-of-stock .product-img-box img { opacity: 0.55; filter: grayscale(0.35); }
+
+    .product-img-box { width: 100%; aspect-ratio: 1 / 1; background: #ffffff; border-radius: 12px; overflow: hidden; position: relative; padding: 6px; }
+    .product-img-box img { width: 100%; height: 100%; object-fit: contain; display: block; color: #1a1a1e; transition: transform 0.3s ease; }
+    .product-card:hover .product-img-box img { transform: scale(1.03); }
+    .product-body { padding-top: 12px; display: flex; flex-direction: column; flex: 1; }
+    .product-meta-line { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; }
+    .product-meta-model { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--accent); }
+    .product-meta-volt { flex-shrink: 0; color: var(--text-secondary); }
+    .product-title {
+      font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary);
+      line-height: 1.3; margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .product-specs {
+      font-size: 11.5px; color: var(--text-secondary); line-height: 1.45; margin-bottom: 12px; flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .product-price { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 10px; letter-spacing: -0.01em; text-align: center; }
+    .product-price span { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-left: 3px; }
+    .add-btn {
+      width: auto; min-width: min(100%, 146px); max-width: 100%; margin: auto auto 0; min-height: 44px;
+      border-radius: 12px; border: none; background: var(--accent); color: #ffffff; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 18px; white-space: nowrap;
+      transition: background 0.16s ease, transform 0.14s ease;
+    }
+    .add-btn:hover { background: var(--accent-hover); }
+    .add-btn:active { transform: scale(0.97); }
+    .add-btn:disabled, .pm-add-btn:disabled { background: #2a2a30; color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
+    .add-btn:disabled:hover, .pm-add-btn:disabled:hover { background: #2a2a30; }
+    .add-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.4; flex-shrink: 0; }
+
+    .card-stepper {
+      width: 100%; max-width: 196px; margin: auto auto 0; min-height: 44px; border-radius: 12px;
+      background: var(--bg-elevated); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+    }
+    .stepper-btn {
+      width: 36px; height: 36px; border-radius: 8px; border: none; background: rgba(255, 107, 0, 0.15); color: var(--accent);
+      font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .stepper-btn:hover, .stepper-btn:active { background: var(--accent); color: #ffffff; }
+    .stepper-btn:disabled, .ci-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .stepper-btn:disabled:hover, .stepper-btn:disabled:active { background: rgba(255, 107, 0, 0.15); color: var(--accent); }
+    .ci-btn:disabled:hover, .ci-btn:disabled:active { background: var(--bg-elevated); color: #ffffff; }
+    .stepper-qty { font-family: var(--font-display); font-size: 13.5px; font-weight: 700; color: #ffffff; }
+
+    /* Scroll Veil Overlay */
+    .scroll-veil {
+      pointer-events: none; position: absolute; inset: 0; border-radius: 16px; opacity: 0; will-change: opacity;
+      background: linear-gradient(to top, rgba(15, 15, 17, 0.96) 22%, rgba(15, 15, 17, 0.72) 62%, rgba(15, 15, 17, 0.18) 100%);
+    }
+    .bottom-mist {
+      pointer-events: none; position: fixed; left: 0; right: 0; bottom: calc(64px + var(--safe-bottom)); z-index: 20;
+      height: 76px; background: linear-gradient(to top, #0f0f11 0%, rgba(15, 15, 17, 0.65) 55%, transparent 100%);
+      opacity: 1; transition: opacity 0.3s ease;
+    }
+    .bottom-mist.hidden { opacity: 0; }
+
+    /* Floating Bottom Cart Bar */
+    .floating-cart-wrap {
+      position: fixed; left: 0; right: 0; bottom: calc(70px + var(--safe-bottom)); z-index: 31; max-width: 576px;
+      margin: 0 auto; padding: 0 16px 8px; transform: translateY(140%); opacity: 0; pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+    }
+    .floating-cart-wrap.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+    /* About Us View */
+    .about-view { max-width: 640px; margin: 0 auto; padding: 18px 16px calc(176px + var(--safe-bottom)); display: none; flex-direction: column; gap: 14px; }
+    .about-view.active { display: flex; }
+    .about-hero { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 20px 18px; display: flex; flex-direction: column; gap: 12px; }
+    .about-brand-row { display: flex; align-items: center; gap: 12px; }
+    .about-brand-icon {
+      width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, #ff6b00 0%, #e05200 100%);
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px var(--accent-glow); flex-shrink: 0;
+    }
+    .about-brand-icon svg { width: 24px; height: 24px; fill: #ffffff; }
+    .about-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.2; }
+    .about-subtitle { font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+    .about-desc { font-size: 13.5px; color: #d0d0d8; line-height: 1.6; }
+    .about-section-label { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-secondary); padding: 4px 2px 0; }
+    .contact-list { display: flex; flex-direction: column; gap: 10px; }
+    .contact-card {
+      background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 14px 16px; min-height: 68px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none; color: var(--text-primary);
+      transition: border-color 0.16s ease, background 0.16s ease, transform 0.14s ease;
+    }
+    .contact-card:hover { border-color: var(--accent); background: var(--bg-elevated); }
+    .contact-card:active { transform: scale(0.985); }
+    .contact-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .contact-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-icon.ig { background: linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(255, 107, 0, 0.2)); color: #ff5a87; }
+    .contact-icon.tg { background: rgba(42, 171, 238, 0.16); color: #38bdf8; }
+    .contact-icon.ph { background: rgba(50, 215, 75, 0.16); color: #32d74b; }
+    .contact-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .contact-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .contact-k { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+    .contact-v { font-family: var(--font-display); font-size: 15.5px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-arrow { width: 18px; height: 18px; stroke: var(--text-secondary); fill: none; stroke-width: 2.2; flex-shrink: 0; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 32; background: rgba(15, 15, 17, 0.94);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-top: 1px solid rgba(42, 42, 48, 0.85);
+      padding: 6px 16px calc(8px + var(--safe-bottom));
+    }
+    .bottom-nav-inner { max-width: 576px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .bottom-nav-btn {
+      min-height: 48px; border: none; border-radius: 12px; background: transparent; color: var(--text-secondary);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 8px;
+      font-family: var(--font-display); font-size: 11.5px; font-weight: 700; white-space: nowrap;
+      transition: color 0.16s ease, background 0.16s ease;
+    }
+    .bottom-nav-btn:hover { color: #ffffff; }
+    .bottom-nav-btn.active { color: var(--accent); background: rgba(255, 107, 0, 0.11); }
+    .bottom-nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .floating-cart-bar {
+      width: 100%; min-height: 52px; border: none; border-radius: 16px; background: linear-gradient(135deg, #ff6b00 0%, #e85a00 100%);
+      padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; color: #ffffff;
+      box-shadow: 0 12px 28px rgba(255, 107, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.45); transition: transform 0.15s ease;
+    }
+    .floating-cart-bar:active { transform: scale(0.985); }
+    .fcb-left { display: flex; align-items: center; gap: 10px; }
+    .fcb-count { font-family: var(--font-display); background: rgba(0, 0, 0, 0.25); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+    .fcb-label { font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .fcb-total { font-family: var(--font-display); font-size: 15px; font-weight: 800; white-space: nowrap; }
+
+    /* Product Detail Modal (PDP) */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 42; background: rgba(0, 0, 0, 0.76); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .product-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 45; width: 100%; height: 100dvh; max-height: 100dvh;
+      margin: 0 auto; background: var(--bg-card); border: none; border-radius: 0; display: flex; flex-direction: column;
+      transform: translateY(104%); pointer-events: none; transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.7);
+    }
+    .product-modal.open { transform: translateY(0); pointer-events: auto; }
+    .product-modal .sheet-handle-wrap { display: none; }
+    .pm-header { padding: calc(12px + var(--safe-top)) 16px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+    .pm-header-meta { font-size: 13px; font-weight: 600; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pm-header-meta span { color: var(--accent); }
+    .pm-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px 16px 26px; display: block; }
+    .pm-scroll > * + * { margin-top: 16px; }
+
+    /* Gallery */
+    .gallery-stage { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 400px; border-radius: 16px; background: #ffffff; overflow: hidden; user-select: none; touch-action: pan-y; padding: 10px; }
+    .gallery-stage img { width: 100%; height: 100%; object-fit: contain; display: block; background: #ffffff; color: #1a1a1e; }
+    .gallery-nav {
+      position: absolute; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(15, 15, 17, 0.72); color: #ffffff;
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); transition: background 0.16s ease;
+    }
+    .gallery-nav:hover { background: var(--accent); border-color: var(--accent); }
+    .gallery-nav.prev { left: 10px; }
+    .gallery-nav.next { right: 10px; }
+    .gallery-nav svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.3; }
+    .gallery-counter { font-family: var(--font-display); position: absolute; bottom: 10px; right: 10px; padding: 4px 9px; border-radius: 8px; background: rgba(15, 15, 17, 0.78); color: #ffffff; font-size: 11px; font-weight: 700; }
+    .gallery-thumbs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .gallery-thumb { aspect-ratio: 1 / 1; border-radius: 10px; border: 2px solid var(--border-subtle); background: #ffffff; overflow: hidden; padding: 2px; transition: border-color 0.16s ease, transform 0.14s ease; }
+    .gallery-thumb.active { border-color: var(--accent); transform: scale(1.03); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; color: #1a1a1e; }
+    .pm-title { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.25; }
+    .pm-desc { font-size: 13.5px; line-height: 1.6; color: #d0d0d8; }
+    .pm-specs-box { border-radius: 16px; border: 1px solid var(--border-subtle); background: var(--bg-primary); overflow: hidden; }
+    .pm-specs-head { padding: 10px 14px; font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #ffffff; border-bottom: 1px solid var(--border-subtle); background: rgba(35, 35, 41, 0.45); }
+    .pm-spec-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; font-size: 13px; border-bottom: 1px solid rgba(42, 42, 48, 0.55); }
+    .pm-spec-row:last-child { border-bottom: none; }
+    .pm-spec-k { color: var(--text-secondary); }
+    .pm-spec-v { color: #ffffff; font-weight: 600; text-align: right; }
+    .pm-features-line { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Pinned Bottom Buy Bar in Product Modal */
+    .pm-footer { flex-shrink: 0; border-top: 1px solid var(--border-subtle); background: var(--bg-card); padding: 12px 18px calc(14px + var(--safe-bottom)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    .pm-price-col { display: flex; flex-direction: row; align-items: baseline; justify-content: center; gap: 8px; }
+    .pm-price-label { font-size: 12px; color: var(--text-secondary); }
+    .pm-price-val { font-family: var(--font-display); font-size: 19px; font-weight: 800; color: #ffffff; white-space: nowrap; }
+    .pm-price-val span { font-size: 12.5px; font-weight: 600; color: var(--accent); }
+    .pm-actions { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+    .pm-add-btn {
+      font-family: var(--font-display); min-height: 48px; width: 100%; max-width: 280px; margin: 0 auto; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, #ff6b00 0%, #e85a00 100%); color: #ffffff; font-size: 14px; font-weight: 800; padding: 0 22px;
+      display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px var(--accent-glow); white-space: nowrap; transition: transform 0.14s ease;
+    }
+    .pm-add-btn:active { transform: scale(0.97); }
+    .pm-add-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2.3; }
+    .pm-stepper { min-height: 48px; border-radius: 14px; background: var(--bg-elevated); border: 1px solid var(--accent); display: flex; align-items: center; gap: 10px; padding: 0 6px; }
+    .pm-go-cart { min-height: 48px; border: none; border-radius: 14px; background: var(--accent); color: #ffffff; font-size: 13px; font-weight: 700; padding: 0 16px; white-space: nowrap; }
+
+    /* Cart Bottom Sheet */
+    .sheet-backdrop { position: fixed; inset: 0; z-index: 48; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .bottom-sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; max-width: 576px; margin: 0 auto; background: var(--bg-card);
+      border: 1px solid var(--border-subtle); border-radius: 24px 24px 0 0; max-height: 90dvh; display: flex; flex-direction: column;
+      transform: translateY(110%); pointer-events: none; transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.65);
+    }
+    .bottom-sheet.open { transform: translateY(0); pointer-events: auto; }
+    .sheet-handle-wrap { padding: 10px 0 4px; display: flex; justify-content: center; flex-shrink: 0; }
+    .sheet-handle { width: 40px; height: 4px; border-radius: 99px; background: #3a3a44; }
+    .sheet-header { padding: 10px 20px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); flex-shrink: 0; }
+    .sheet-title { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: #ffffff; }
+    .sheet-close-btn { width: 36px; height: 36px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; }
+    .sheet-close-btn:hover { color: #ffffff; }
+    .sheet-close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+    .sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 16px 20px calc(28px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 18px; }
+    .sheet-state-box { padding: 36px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .state-icon { width: 56px; height: 56px; border-radius: 16px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .state-icon.success { border-color: rgba(50, 215, 75, 0.25); background: rgba(50, 215, 75, 0.14); color: var(--success); }
+    .state-icon svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .state-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #ffffff; }
+    .state-desc { font-size: 13px; color: var(--text-secondary); max-width: 280px; line-height: 1.45; }
+    .cart-items-list { display: flex; flex-direction: column; gap: 10px; }
+    .cart-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: var(--bg-primary); border: 1px solid var(--border-subtle); }
+    .cart-item-img { width: 56px; height: 56px; border-radius: 12px; background: #f3f4f6; overflow: hidden; flex-shrink: 0; }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-name { font-size: 13.5px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cart-item-price { font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 2px; }
+    .cart-item-controls { display: flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 4px; }
+    .ci-btn {
+      width: 32px; height: 32px; border-radius: 8px; border: none; background: var(--bg-elevated); color: #ffffff; font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      touch-action: manipulation; transition: background 0.15s ease;
+    }
+    .ci-btn:hover, .ci-btn:active { background: var(--accent); }
+    .ci-qty { min-width: 20px; text-align: center; font-size: 13px; font-weight: 700; color: #ffffff; }
+    .checkout-section { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+    .section-subtitle { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #ffffff; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .form-input { width: 100%; height: 44px; border-radius: 12px; background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 0 14px; font-size: 14px; color: #ffffff; transition: border-color 0.2s ease; }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus { border-color: var(--accent); }
+    .form-input.error { border-color: var(--danger); }
+    .segment-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .segment-group.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .segment-btn { min-height: 42px; border-radius: 12px; background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 12px; font-weight: 600; padding: 0 12px; white-space: nowrap; transition: all 0.15s ease; }
+    .segment-btn:hover { color: #ffffff; }
+    .segment-btn.active { background: rgba(255, 107, 0, 0.15); border-color: var(--accent); color: var(--accent); }
+    .order-summary { background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .summary-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+    .summary-total { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: #ffffff; }
+    .summary-total span { color: var(--accent); font-size: 14px; font-weight: 700; }
+    .form-error-msg { font-size: 12px; color: var(--danger); font-weight: 600; display: none; }
+    .form-error-msg.visible { display: block; }
+    .submit-order-btn { font-family: var(--font-display); width: 100%; min-height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #ff6b00 0%, #e85a00 100%); color: #ffffff; font-size: 14px; font-weight: 800; box-shadow: 0 8px 22px var(--accent-glow); transition: transform 0.14s ease, opacity 0.2s ease; }
+    .submit-order-btn:active { transform: scale(0.985); }
+    .submit-order-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .back-catalog-btn { margin-top: 12px; min-height: 44px; padding: 10px 24px; border-radius: 12px; border: none; background: var(--accent); color: #ffffff; font-size: 14px; font-weight: 700; }
+
+    /* Toast */
+    .toast {
+      position: fixed; top: calc(16px + var(--safe-top)); left: 50%; transform: translateX(-50%) translateY(-160%); z-index: 60;
+      background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: #ffffff; padding: 10px 16px; border-radius: 12px;
+      font-size: 12px; font-weight: 600; white-space: nowrap; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (min-width: 640px) {
+      .header-inner { padding: 12px 24px; }
+      .lang-icon { display: block; }
+      .page-head { padding: 24px 24px 16px; }
+      .catalog-title { font-size: 24px; }
+      .cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0 24px 186px; }
+      .about-view { padding: 24px 24px 186px; }
+      .category-card, .product-card { padding: 14px; }
+      .product-title, .category-name { font-size: 15.5px; }
+      .product-specs, .category-desc { font-size: 12px; }
+      .product-price { font-size: 17px; }
+      .product-modal { top: auto; bottom: 24px; max-width: 720px; height: auto; max-height: 92dvh; border: 1px solid var(--border-subtle); border-radius: 24px; }
+      .pm-header { padding: 14px 20px; }
+      .pm-scroll { padding: 18px 20px 26px; }
+      .gallery-stage { aspect-ratio: 4 / 3; max-height: 420px; }
+      .bottom-sheet { bottom: 24px; border-radius: 24px; }
+      .sheet-handle-wrap { display: none; }
+    }
+    @media (min-width: 1024px) { .cards-grid { gap: 20px; } }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <button class="brand" id="brandHomeBtn" type="button">
+        <span class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" /></svg>
+        </span>
+        <span class="brand-name">ONEX</span>
+      </button>
+
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Tilni tanlash / Выбор языка">
+          <svg class="lang-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1m14 20l-5-10-5 10m1.5-3h7" />
+          </svg>
+          <button type="button" class="lang-btn" id="langBtnUz">O'Z</button>
+          <button type="button" class="lang-btn" id="langBtnRu">RU</button>
+        </div>
+
+        <button class="header-cart-btn" id="headerCartBtn" type="button" aria-label="Savatni ochish">
+          <svg viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6L5 3H2" />
+            <circle cx="9.5" cy="19.5" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="17.5" cy="19.5" r="1.2" fill="currentColor" stroke="none" />
+          </svg>
+          <span class="cart-badge tabular-nums" id="headerCartBadge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-head" id="pageHead">
+      <div class="back-bar" id="backBar" style="display: none;">
+        <button type="button" class="back-btn" id="backToCatsBtn">
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
+          <span id="backBtnLabel"></span>
+        </button>
+      </div>
+      <p class="store-subtitle" id="storeSubtitle"></p>
+      <div class="catalog-meta">
+        <h1 class="catalog-title" id="catalogTitle"></h1>
+        <span class="catalog-count tabular-nums" id="catalogCount"></span>
+      </div>
+    </div>
+
+    <main class="cards-grid" id="cardsGrid"></main>
+
+    <!-- About Us Section -->
+    <section class="about-view" id="aboutView" aria-label="Biz haqimizda">
+      <div class="about-hero">
+        <div class="about-brand-row">
+          <span class="about-brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" /></svg>
+          </span>
+          <div>
+            <h1 class="about-title" id="aboutTitle"></h1>
+            <p class="about-subtitle" id="aboutSubtitle"></p>
+          </div>
+        </div>
+        <p class="about-desc" id="aboutDesc"></p>
+      </div>
+
+      <h2 class="about-section-label" id="aboutContactsLabel"></h2>
+
+      <div class="contact-list">
+        <a class="contact-card" id="contactInstagram" href="https://www.instagram.com/onex_uz/" target="_blank" rel="noopener noreferrer" data-app-link="instagram">
+          <div class="contact-left">
+            <span class="contact-icon ig" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+            <span class="contact-text">
+              <span class="contact-k" id="contactIgLabel">Instagram</span>
+              <span class="contact-v">@onex_uz</span>
+            </span>
+          </div>
+          <svg class="contact-arrow" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </a>
+
+        <a class="contact-card" id="contactTelegram" href="https://t.me/onex_by" target="_blank" rel="noopener noreferrer" data-app-link="telegram">
+          <div class="contact-left">
+            <span class="contact-icon tg" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.5 4.5L2.8 11.7c-.8.3-.8 1.4 0 1.7l4.6 1.6 1.8 5.4c.2.7 1.1.9 1.6.4l2.7-2.6 4.7 3.5c.6.4 1.5.1 1.7-.7L22 5.7c.2-.8-.5-1.4-.5-1.2z" />
+              </svg>
+            </span>
+            <span class="contact-text">
+              <span class="contact-k" id="contactTgLabel">Telegram</span>
+              <span class="contact-v">@onex_by</span>
+            </span>
+          </div>
+          <svg class="contact-arrow" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </a>
+
+        <a class="contact-card" id="contactPhone" href="tel:+998903942000" data-app-link="phone">
+          <div class="contact-left">
+            <span class="contact-icon ph" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+              </svg>
+            </span>
+            <span class="contact-text">
+              <span class="contact-k" id="contactPhoneLabel"></span>
+              <span class="contact-v tabular-nums">+998 90 394 20 00</span>
+            </span>
+          </div>
+          <svg class="contact-arrow" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Atmospheric Bottom Mist -->
+  <div class="bottom-mist" id="bottomMist" aria-hidden="true"></div>
+
+  <!-- Floating Bottom Cart CTA -->
+  <div class="floating-cart-wrap" id="floatingCartWrap">
+    <button class="floating-cart-bar" id="floatingCartBtn" type="button">
+      <div class="fcb-left">
+        <span class="fcb-count tabular-nums" id="floatingCount"></span>
+        <span class="fcb-label" id="floatingLabel"></span>
+      </div>
+      <span class="fcb-total tabular-nums" id="floatingTotal"></span>
+    </button>
+  </div>
+
+  <!-- Bottom Navigation (2 sections: Asosiy & Biz haqimizda) -->
+  <nav class="bottom-nav" id="bottomNav" aria-label="Asosiy navigatsiya">
+    <div class="bottom-nav-inner">
+      <button type="button" class="bottom-nav-btn active" id="navHomeBtn" data-nav-tab="home">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5.5v-6h-5v6H4a1 1 0 01-1-1v-9.5z" /></svg>
+        <span id="navHomeLabel"></span>
+      </button>
+      <button type="button" class="bottom-nav-btn" id="navAboutBtn" data-nav-tab="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01" /></svg>
+        <span id="navAboutLabel"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Product Detail Modal -->
+  <div class="modal-backdrop" id="productBackdrop"></div>
+  <section class="product-modal" id="productModal" aria-modal="true" role="dialog" aria-label="Mahsulot">
+    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="pm-header">
+      <div class="pm-header-meta" id="pmHeaderMeta"></div>
+      <button class="sheet-close-btn" id="closeProductBtn" type="button" aria-label="Yopish">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+    </div>
+    <div class="pm-scroll" id="pmBody"></div>
+    <div class="pm-footer" id="pmFooter"></div>
+  </section>
+
+  <!-- Cart Bottom Sheet -->
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <section class="bottom-sheet" id="cartSheet" aria-modal="true" role="dialog" aria-label="Savat">
+    <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+    <div class="sheet-header">
+      <h2 class="sheet-title" id="sheetTitle"></h2>
+      <button class="sheet-close-btn" id="closeSheetBtn" type="button" aria-label="Yopish">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      const LANG_STORAGE_KEY = 'onex_store_lang';
+
+      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+      if (tg) {
+        try {
+          tg.ready();
+          tg.expand();
+          if (tg.requestFullscreen) tg.requestFullscreen();
+          if (tg.setHeaderColor) tg.setHeaderColor('#0F0F11');
+          if (tg.setBackgroundColor) tg.setBackgroundColor('#0F0F11');
+        } catch (_) {}
+      }
+
+      function haptic(type) {
+        try {
+          if (!tg || !tg.HapticFeedback) return;
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else tg.HapticFeedback.impactOccurred(type || 'light');
+        } catch (_) {}
+      }
+
+      function ruPlural(count, forms) {
+        const mod10 = count % 10;
+        const mod100 = count % 100;
+        if (mod10 === 1 && mod100 !== 11) return forms[0];
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return forms[1];
+        return forms[2];
+      }
+
+      const TRANSLATIONS = {
+        uz: {
+          docTitle: "ONEX — Rasmiy Elektr Asboblar Do'koni",
+          brandSubtitle: "Rasmiy ONEX katalogi · 12 oy kafolat · German Technology",
+          categoriesTitle: 'Kategoriyalar',
+          categoriesCount: function (n) { return n + " ta bo'lim"; },
+          modelsCount: function (n) { return n + ' ta model'; },
+          openCategory: "Bo'limga kirish",
+          backToCategories: 'Barcha kategoriyalar',
+          openCartAria: 'Savatni ochish',
+          addToCart: 'Savatga',
+          addToCartFull: "Savatga qo'shish",
+          goToCart: "Savatga o'tish",
+          decreaseQty: 'Kamaytirish',
+          increaseQty: "Ko'paytirish",
+          unitShort: 'ta',
+          currency: "so'm",
+          priceLabel: 'Narxi',
+          specsHeading: 'Texnik xususiyatlari',
+          featuresLine: 'LED yoritgich · Past shovqin darajasi · Mustahkam korpus · Suvga chidamli · 12 oy kafolat',
+          viewCart: "Savatni ko'rish",
+          cartTitle: 'Savat',
+          closeAria: 'Yopish',
+          emptyCartTitle: "Savatingiz bo'sh",
+          emptyCartDesc: "Kategoriyalardan kerakli ONEX asboblarini tanlab savatga qo'shing.",
+          checkoutTitle: 'Buyurtmani rasmiylashtirish',
+          nameLabel: 'Ismingiz *',
+          namePlaceholder: 'Masalan: Jasur',
+          phoneLabel: 'Telefon raqamingiz *',
+          deliveryMethodLabel: 'Yetkazib berish usuli',
+          deliveryCourier: 'Yetkazib berish',
+          deliveryPickup: 'Olib ketish',
+          pickupAddressValue: "Do'kondan olib ketish",
+          addressLabel: 'Yetkazib berish manzili *',
+          addressPlaceholder: "Shahar, tuman, ko'cha va uy raqami",
+          paymentMethodLabel: "To'lov turi",
+          paymentCash: 'Naqd',
+          totalLabel: "Jami to'lov:",
+          submitOrder: 'Buyurtmani tasdiqlash',
+          submittingOrder: 'Yuborilmoqda...',
+          errName: 'Iltimos, ismingizni kiriting.',
+          errPhone: "Iltimos, to'g'ri telefon raqamini kiriting.",
+          errAddress: 'Iltimos, yetkazib berish manzilini kiriting.',
+          errServer: "Buyurtmani yuborishda xatolik yuz berdi. Qayta urinib ko'ring.",
+          errInsufficientStock: "Ba'zi mahsulotlar omborda yetarli emas. Savat yangilandi.",
+          toastAdded: "Savatga qo'shildi",
+          toastAccepted: 'Buyurtmangiz qabul qilindi!',
+          stockRemaining: function (n) { return 'Qoldi: ' + n + ' dona'; },
+          outOfStock: "Sotuvda yo'q",
+          maxStockReached: function (n) { return 'Omborda faqat ' + n + ' dona bor'; },
+          confirmedTitle: function (id) { return 'Buyurtma #' + id + ' tasdiqlandi'; },
+          confirmedSubtitle: "Operatorimiz tez orada siz bilan bog'lanadi.",
+          confirmedTotalLabel: 'Jami:',
+          backToCatalog: 'Katalogga qaytish',
+          navHome: 'Asosiy',
+          navAbout: 'Biz haqimizda',
+          aboutTitle: 'ONEX Official Store',
+          aboutSubtitle: 'German Technology · 12 oy rasmiy kafolat',
+          aboutDesc: "ONEX — professional ustalar va uy xo'jaligi uchun yagona 21V Li-Ion platformadagi zamonaviy akkumulyatorli elektr asboblarning rasmiy do'koni. Barcha mahsulotlar asl kafolat va O'zbekiston bo'ylab tezkor yetkazib berish bilan taqdim etiladi.",
+          aboutContactsLabel: "Aloqa va ijtimoiy tarmoqlar",
+          contactPhoneLabel: 'Telefon raqam'
+        },
+        ru: {
+          docTitle: 'ONEX — Официальный магазин электроинструментов',
+          brandSubtitle: 'Официальный каталог ONEX · Гарантия 12 мес. · German Technology',
+          categoriesTitle: 'Категории',
+          categoriesCount: function (n) { return n + ' ' + ruPlural(n, ['раздел', 'раздела', 'разделов']); },
+          modelsCount: function (n) { return n + ' ' + ruPlural(n, ['модель', 'модели', 'моделей']); },
+          openCategory: 'Открыть раздел',
+          backToCategories: 'Все категории',
+          openCartAria: 'Открыть корзину',
+          addToCart: 'В корзину',
+          addToCartFull: 'Добавить в корзину',
+          goToCart: 'Перейти в корзину',
+          decreaseQty: 'Уменьшить',
+          increaseQty: 'Увеличить',
+          unitShort: 'шт.',
+          currency: 'сум',
+          priceLabel: 'Цена',
+          specsHeading: 'Технические характеристики',
+          featuresLine: 'LED подсветка · Низкий уровень шума · Сверхпрочный корпус · Водостойкий · Гарантия 12 мес.',
+          viewCart: 'Открыть корзину',
+          cartTitle: 'Корзина',
+          closeAria: 'Закрыть',
+          emptyCartTitle: 'Ваша корзина пуста',
+          emptyCartDesc: 'Выберите нужный раздел и добавьте инструменты ONEX в корзину.',
+          checkoutTitle: 'Оформление заказа',
+          nameLabel: 'Ваше имя *',
+          namePlaceholder: 'Например: Жасур',
+          phoneLabel: 'Ваш номер телефона *',
+          deliveryMethodLabel: 'Способ доставки',
+          deliveryCourier: 'Доставка',
+          deliveryPickup: 'Самовывоз',
+          pickupAddressValue: 'Самовывоз из магазина',
+          addressLabel: 'Адрес доставки *',
+          addressPlaceholder: 'Город, район, улица и номер дома',
+          paymentMethodLabel: 'Способ оплаты',
+          paymentCash: 'Наличные',
+          totalLabel: 'Итого к оплате:',
+          submitOrder: 'Подтвердить заказ',
+          submittingOrder: 'Отправка...',
+          errName: 'Пожалуйста, введите ваше имя.',
+          errPhone: 'Пожалуйста, введите корректный номер телефона.',
+          errAddress: 'Пожалуйста, введите адрес доставки.',
+          errServer: 'Произошла ошибка при отправке заказа. Попробуйте снова.',
+          errInsufficientStock: 'Некоторых товаров недостаточно на складе. Корзина обновлена.',
+          toastAdded: 'Добавлено в корзину',
+          toastAccepted: 'Ваш заказ принят!',
+          stockRemaining: function (n) { return 'Осталось: ' + n + ' шт.'; },
+          outOfStock: 'Нет в наличии',
+          maxStockReached: function (n) { return 'В наличии только ' + n + ' шт.'; },
+          confirmedTitle: function (id) { return 'Заказ #' + id + ' подтверждён'; },
+          confirmedSubtitle: 'Наш оператор свяжется с вами в ближайшее время.',
+          confirmedTotalLabel: 'Итого:',
+          backToCatalog: 'Вернуться в каталог',
+          navHome: 'Главная',
+          navAbout: 'О нас',
+          aboutTitle: 'ONEX Official Store',
+          aboutSubtitle: 'German Technology · Официальная гарантия 12 мес.',
+          aboutDesc: 'ONEX — официальный магазин современных аккумуляторных электроинструментов на единой платформе 21V Li-Ion для профессионалов и дома. Официальная гарантия на все модели и быстрая доставка по Узбекистану.',
+          aboutContactsLabel: 'Контакты и соцсети',
+          contactPhoneLabel: 'Телефон'
+        }
+      };
+
+      function svgDataUrl(svg) {
+        return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+      }
+
+      function renderDetailSlideSvg(product, slideKind, lang) {
+        if (slideKind === 'kit') {
+          const title = lang === 'ru' ? 'Комплектация в коробке' : "Quti ichidagi to'plam";
+          const items = product.category === 'batteries'
+            ? [
+                lang === 'ru' ? 'Фирменный блок ONEX' : 'Original ONEX moduli',
+                lang === 'ru' ? 'Защита от перегрева' : 'Qizishdan himoya',
+                lang === 'ru' ? 'Гарантийный талон 12 мес.' : '12 oylik kafolat taloni',
+                lang === 'ru' ? 'Фирменная упаковка' : 'Original qadoq'
+              ]
+            : [
+                'ONEX ' + product.model,
+                lang === 'ru' ? 'Аккумулятор 21V Li-Ion' : '21V Li-Ion akkumulyator',
+                lang === 'ru' ? 'Зарядное устройство 21V' : '21V zaryadlovchi qurilma',
+                lang === 'ru' ? 'Кейс / гарантия 12 мес.' : 'Keys / 12 oy kafolat'
+              ];
+          const cards = items.map(function (txt, idx) {
+            const col = idx % 2, row = Math.floor(idx / 2);
+            const x = 34 + col * 172, y = 112 + row * 124;
+            return '<rect x="' + x + '" y="' + y + '" width="160" height="108" rx="14" fill="#1a1a1e" stroke="#2a2a30"/>' +
+              '<circle cx="' + (x + 28) + '" cy="' + (y + 32) + '" r="12" fill="#ff6b00"/>' +
+              '<text x="' + (x + 28) + '" y="' + (y + 37) + '" font-family="Arial,sans-serif" font-weight="800" font-size="12" fill="#fff" text-anchor="middle">' + (idx + 1) + '</text>' +
+              '<text x="' + (x + 16) + '" y="' + (y + 74) + '" font-family="Arial,sans-serif" font-weight="600" font-size="12" fill="#f5f5f7">' + txt.slice(0, 22) + '</text>';
+          }).join('');
+          return svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#0f0f11"/><text x="34" y="56" font-family="Arial,sans-serif" font-weight="800" font-size="14" fill="#ff6b00">ONEX KIT · ' + product.model + '</text><text x="34" y="84" font-family="Arial,sans-serif" font-weight="700" font-size="19" fill="#ffffff">' + title + '</text>' + cards + '</svg>');
+        }
+        const title = lang === 'ru' ? 'Преимущества ONEX' : 'ONEX ustunliklari';
+        const badges = lang === 'ru'
+          ? ['LED подсветка', 'Низкий шум', 'Прочный корпус', 'Водостойкий']
+          : ['LED yoritgich', 'Past shovqin', 'Mustahkam korpus', 'Suvga chidamli'];
+        const boxes = badges.map(function (b, idx) {
+          const col = idx % 2, row = Math.floor(idx / 2);
+          const x = 34 + col * 172, y = 108 + row * 102;
+          return '<rect x="' + x + '" y="' + y + '" width="160" height="86" rx="14" fill="#1a1a1e" stroke="#ff6b00" stroke-opacity="0.45"/>' +
+            '<text x="' + (x + 80) + '" y="' + (y + 49) + '" font-family="Arial,sans-serif" font-weight="700" font-size="13" fill="#ffffff" text-anchor="middle">' + b + '</text>';
+        }).join('');
+        const guar = lang === 'ru' ? '12 МЕСЯЦЕВ ГАРАНТИИ · GERMAN TECHNOLOGY' : '12 OY RASMIY KAFOLAT · GERMAN TECHNOLOGY';
+        return svgDataUrl('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#0f0f11"/><text x="34" y="56" font-family="Arial,sans-serif" font-weight="800" font-size="14" fill="#ff6b00">ONEX PRO SERIES</text><text x="34" y="84" font-family="Arial,sans-serif" font-weight="700" font-size="19" fill="#ffffff">' + title + '</text>' + boxes + '<rect x="34" y="324" width="332" height="44" rx="12" fill="#ff6b00"/><text x="200" y="351" font-family="Arial,sans-serif" font-weight="800" font-size="12" fill="#ffffff" text-anchor="middle">' + guar + '</text></svg>');
+      }
+
+      const GH_CDN_BASE = 'https://cdn.jsdelivr.net/gh/mavlyanxodnayevavazxon-cell/onex_ssayt@main/public';
+      const GH_RAW_BASE = 'https://raw.githubusercontent.com/mavlyanxodnayevavazxon-cell/onex_ssayt/main/public';
+      const IS_LOCAL_PREVIEW = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.endsWith('.run.app');
+
+      function resolveAsset(src) {
+        if (!src) return '';
+        if (src.indexOf('/assets/') === 0) return IS_LOCAL_PREVIEW ? src : GH_CDN_BASE + src;
+        return src;
+      }
+
+      document.addEventListener('error', function (e) {
+        const img = e.target;
+        if (!img || img.tagName !== 'IMG') return;
+        const orig = img.getAttribute('data-orig-src');
+        if (!orig || orig.indexOf('/assets/') !== 0) return;
+        const step = Number(img.getAttribute('data-fb-step') || '0');
+        if (step === 0 && img.src.indexOf(GH_CDN_BASE) === -1) {
+          img.setAttribute('data-fb-step', '1');
+          img.src = GH_CDN_BASE + orig;
+        } else if (step <= 1 && img.src.indexOf(GH_RAW_BASE) === -1) {
+          img.setAttribute('data-fb-step', '2');
+          img.src = GH_RAW_BASE + orig;
+        }
+      }, true);
+
+      const IMG_LINEUP = '/assets/products/onex_lineup.jpg';
+      const IMG_CASE_KIT = '/assets/products/onex_case_kit.jpg';
+      const IMG_XDW_REAL = '/assets/products/onex_xdw_real.jpg';
+      const IMG_ANGLE_REAL = '/assets/products/onex_angle_real.jpg';
+      const IMG_RASM_FULL = '/assets/aistudio/onex_rasm_06f0b5ab.jpg';
+
+      const CATEGORIES = [
+        { id: 'drills', nameUz: 'Shurupovyortlar', nameRu: 'Шуруповёрты', descUz: "18V va 21V zarbali va cho'tkasiz shurupovyortlar (60–120 Nm)", descRu: 'Аккумуляторные ударные шуруповёрты 18V и 21V (60–120 Нм)', image: '/assets/products/xcd2113pro.jpg' },
+        { id: 'wrenches', nameUz: 'Gaykavyort va Kalitlar', nameRu: 'Гайковёрты и ключи', descUz: '500 dan 1500 Nm gacha kuchli gaykavyortlar va treshyotka kalit', descRu: 'Мощные гайковёрты 500–1500 Нм и трещоточный ключ', image: IMG_XDW_REAL },
+        { id: 'hammers_grinders', nameUz: 'Perforator va Bolgarkalar', nameRu: 'Перфораторы и Болгарки', descUz: "21V SDS-Plus perforator (2.6 J) va 125mm cho'tkasiz bolgarka", descRu: 'Аккумуляторный перфоратор 2.6 Дж и УШМ 125 мм', image: '/assets/products/xch2_26pro.jpg' },
+        { id: 'garden_saws', nameUz: "Bog' va Kesish Asboblari", nameRu: 'Сад и Цепные пилы', descUz: "Akkumulyatorli bog' qaychilari (32–40 mm) va zanjirli arralar (10\"–12\")", descRu: 'Аккумуляторные секаторы (32–40 мм) и цепные пилы (10"–12")', image: '/assets/products/xchs12.jpg' },
+        { id: 'blowers', nameUz: 'Puflagich va Turbosushkalar', nameRu: 'Воздуходувки и Турбосушки', descUz: '50–52 m/s tezlikdagi kuchli turbosushka va havo puflagich', descRu: 'Мощная турбосушка (590 м³/ч) и воздуходувка 50 м/с', image: '/assets/products/xbc01.jpg' },
+        { id: 'combos', nameUz: "Kombo To'plamlar", nameRu: 'Комбо-наборы', descUz: "2-in-1, 3-in-1 va 4-in-1 professional ustalar uchun tayyor to'plamlar", descRu: 'Готовые профессиональные наборы 2-в-1, 3-в-1 и 4-в-1', image: '/assets/products/xpr04_1.jpg' },
+        { id: 'batteries', nameUz: 'Batareya va Zaryadlovchilar', nameRu: 'Батареи и Зарядки', descUz: '21V 2A/4A akkumulyatorlar, adapter va tezkor zaryadlovchi', descRu: 'Аккумуляторы 21V (2 и 4 А/ч), адаптер и быстрая зарядка', image: '/assets/products/one_10c.jpg' }
+      ];
+
+      const PRODUCTS = [
+        { id: 101, model: 'XCD1801', category: 'drills', name: 'ONEX XCD1801 Shurupovyort', nameRu: 'ONEX XCD1801 Шуруповёрт', voltLabel: '18V · 60 Nm', price: 680000, image: '/assets/products/xcd1801.jpg', cardImage: '/assets/products/xcd1801_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '18V · 2 A/soat · 500–2000 ayl/min · 60 Nm', shortRu: '18V · 2 А/ч · 500–2000 об/мин · 60 Нм',
+          descUz: "Yengil va qulay 18 voltli akkumulyatorli zarbali shurupovyort. Mebel yig'ish, gipsokarton o'rnatish va uy-ro'zg'or hamda ustachilik ishlari uchun ideal.",
+          descRu: 'Лёгкий и удобный аккумуляторный ударный шуруповёрт 18 В с крутящим моментом 60 Нм. Идеально подходит для сборки мебели, монтажа и повседневных строительных работ.',
+          specsListUz: [{ k: 'Model', v: 'XCD1801' }, { k: 'Kuchlanish', v: '18 volt, 2 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '60 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD1801' }, { k: 'Напряжение', v: '18 вольт, 2 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '60 Нм' }] },
+        { id: 102, model: 'XCD2102', category: 'drills', name: 'ONEX XCD2102 Shurupovyort', nameRu: 'ONEX XCD2102 Шуруповёрт', voltLabel: '21V · 60 Nm', price: 760000, image: '/assets/products/xcd2102.jpg', cardImage: '/assets/products/xcd2102_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 2 A/soat · 500–2000 ayl/min · 60 Nm', shortRu: '21V · 2 А/ч · 500–2000 об/мин · 60 Нм',
+          descUz: "21 voltli yangilangan Li-Ion platformadagi zarbali shurupovyort. Tez siqiladigan patron, LED yoritgich va rezinali ergonomik tutqich bilan jihozlangan.",
+          descRu: 'Ударный шуруповёрт на платформе 21 В с эргономичной прорезиненной рукояткой, LED-подсветкой рабочей зоны и плавной регулировкой оборотов до 2000 об/мин.',
+          specsListUz: [{ k: 'Model', v: 'XCD2102' }, { k: 'Kuchlanish', v: '21 volt, 2 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '60 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD2102' }, { k: 'Напряжение', v: '21 вольт, 2 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '60 Нм' }] },
+        { id: 103, model: 'XCD2110', category: 'drills', name: 'ONEX XCD2110 Shurupovyort', nameRu: 'ONEX XCD2110 Шуруповёрт', voltLabel: '21V · 70 Nm', price: 830000, image: '/assets/products/xcd2110.jpg', cardImage: '/assets/products/xcd2110_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 2 A/soat · 500–2000 ayl/min · 70 Nm', shortRu: '21V · 2 А/ч · 500–2000 об/мин · 70 Нм',
+          descUz: "70 Nm aylantiruvchi momentga ega kuchaytirilgan shurupovyort. Qattiq yog'och, metall profil va beton devorlarda ishonchli teshish va qotirish imkonini beradi.",
+          descRu: 'Усиленный шуруповёрт с крутящим моментом 70 Нм. Легко справляется с твёрдой древесиной, металлическими профилями и ударным сверлением.',
+          specsListUz: [{ k: 'Model', v: 'XCD2110' }, { k: 'Kuchlanish', v: '21 volt, 2 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '70 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD2110' }, { k: 'Напряжение', v: '21 вольт, 2 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '70 Нм' }] },
+        { id: 104, model: 'XCD2113PRO', category: 'drills', name: 'ONEX XCD2113PRO Shurupovyort', nameRu: 'ONEX XCD2113PRO Шуруповёрт', voltLabel: '21V · 70 Nm PRO', price: 939000, image: '/assets/products/xcd2113pro.jpg', cardImage: '/assets/products/xcd2113pro_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: "21V · 2 A/soat · 70 Nm · Cho'tkasiz PRO", shortRu: '21V · 2 А/ч · 70 Нм · Бесщёточный PRO',
+          descUz: "Cho'tkasiz (Brushless) motorli professional PRO seriyadagi shurupovyort. Metall patroni va 70 Nm kuchi bilan uzoq muddatli og'ir yuklamalarga mo'ljallangan.",
+          descRu: 'Профессиональная модель серии PRO с бесщёточным двигателем и металлическим патроном. Высокая износостойкость и крутящий момент 70 Нм для ежедневной работы.',
+          specsListUz: [{ k: 'Model', v: 'XCD2113PRO' }, { k: 'Kuchlanish', v: '21 volt, 2 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '70 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD2113PRO' }, { k: 'Напряжение', v: '21 вольт, 2 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '70 Нм' }] },
+        { id: 105, model: 'XCD21134PRO', category: 'drills', name: 'ONEX XCD21134PRO Shurupovyort', nameRu: 'ONEX XCD21134PRO Шуруповёрт', voltLabel: '21V 4Ah · 70 Nm', price: 1090000, image: '/assets/products/xcd21134pro.jpg', cardImage: '/assets/products/xcd21134pro_card.jpg', extraImage: '/assets/products/one_10c.jpg',
+          shortUz: '21V · 4 A/soat katta AKB · 70 Nm · PRO', shortRu: '21V · Усиленная АКБ 4 А/ч · 70 Нм · PRO',
+          descUz: "4 A/soat sig'imli kuchaytirilgan akkumulyator bilan jihozlangan PRO shurupovyort. Bir quvvatlashda uzoqroq ishlash talab qilinadigan obyektlar uchun ideal.",
+          descRu: 'Версия PRO с увеличенной батареей 4 А/ч для продолжительной автономной работы на объекте без частых подзарядок.',
+          specsListUz: [{ k: 'Model', v: 'XCD21134PRO' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '70 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD21134PRO' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '70 Нм' }] },
+        { id: 106, model: 'XCD13PRO', category: 'drills', name: 'ONEX XCD13PRO Shurupovyort', nameRu: 'ONEX XCD13PRO Шуруповёрт', voltLabel: '21V 4Ah · 120 Nm', price: 1290000, image: '/assets/products/xcd13pro.jpg', cardImage: '/assets/products/xcd13pro_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · 120 Nm super kuchli · 13mm', shortRu: '21V · 4 А/ч · Мощность 120 Нм · Патрон 13 мм',
+          descUz: "ONEX qatoridagi eng kuchli 120 Nm shurupovyort. 13 mm metall patron, qo'shimcha yon tutqich va 4 A/soat batareya bilan qalin metall va yog'ochni oson teshadi.",
+          descRu: 'Флагманский ударный шуруповёрт ONEX с рекордным моментом 120 Нм, стальным патроном 13 мм и батареей 4 А/ч для самых тяжёлых монтажных задач.',
+          specsListUz: [{ k: 'Model', v: 'XCD13PRO' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Yuksiz tezlik', v: '500–2000 ayl/min' }, { k: 'Maks. moment', v: '120 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCD13PRO' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Скорость без нагрузки', v: '500–2000 об/мин' }, { k: 'Макс. крутящий момент', v: '120 Нм' }] },
+
+        { id: 201, model: 'XCW500', category: 'wrenches', name: 'ONEX XCW500 Gaykavyort', nameRu: 'ONEX XCW500 Гайковёрт', voltLabel: '21V · 500 Nm', price: 980000, image: '/assets/products/xcw500.jpg', cardImage: '/assets/products/xcw500_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: '21V · 4 A/soat · 500–3500 ayl/min · 500 Nm', shortRu: '21V · 4 А/ч · 500–3500 об/мин · 500 Нм',
+          descUz: "500 Nm zarbali akkumulyatorli gaykavyort. Yengil avtomobil g'ildiraklari, avtoservis va metall konstruksiyalarni yig'ishda tez va ishonchli ishlaydi.",
+          descRu: 'Компактный высокомоментный гайковёрт 500 Нм с частотой вращения до 3500 об/мин. Оптимален для шиномонтажа, автосервиса и сборки металлоконструкций.',
+          specsListUz: [{ k: 'Model', v: 'XCW500' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Aylanish tezligi', v: '500–3500 ayl/min' }, { k: 'Maks. moment', v: '500 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCW500' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Частота вращения', v: '500–3500 об/мин' }, { k: 'Макс. крутящий момент', v: '500 Нм' }] },
+        { id: 202, model: 'XCW1500', category: 'wrenches', name: 'ONEX XCW1500 Gaykavyort', nameRu: 'ONEX XCW1500 Гайковёрт', voltLabel: '21V · 1000 Nm', price: 1350000, image: '/assets/products/xcw1500.jpg', cardImage: '/assets/products/xcw1500_card.jpg', extraImage: IMG_XDW_REAL,
+          shortUz: '21V · 4 A/soat · 500–3000 ayl/min · 1000 Nm', shortRu: '21V · 4 А/ч · 500–3000 об/мин · 1000 Нм',
+          descUz: "1000 Nm ulkan tortish kuchiga ega og'ir yuklamali gaykavyort. Zanglagan va qotib qolgan katta bolt-gaykalarni qiynalmasdan yechadi.",
+          descRu: 'Мощный ударный гайковёрт с крутящим моментом 1000 Нм. Уверенно откручивает прикипевшие и крупногабаритные резьбовые соединения.',
+          specsListUz: [{ k: 'Model', v: 'XCW1500' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Aylanish tezligi', v: '500–3000 ayl/min' }, { k: 'Maks. moment', v: '1000 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCW1500' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Частота вращения', v: '500–3000 об/мин' }, { k: 'Макс. крутящий момент', v: '1000 Нм' }] },
+        { id: 203, model: 'XCW2000', category: 'wrenches', name: 'ONEX XCW2000 Gaykavyort', nameRu: 'ONEX XCW2000 Гайковёрт', voltLabel: '21V 6Ah · 1500 Nm', price: 1690000, image: '/assets/products/xcw2000.jpg', cardImage: '/assets/products/xcw2000_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: '21V · 6 A/soat · 500–3000 ayl/min · 1500 Nm', shortRu: '21V · 6 А/ч · 500–3000 об/мин · 1500 Нм',
+          descUz: "Maksimal 1500 Nm kuch va 6 A/soat batareyaga ega sanoat darajasidagi gaykavyort. Yuk mashinalari, maxsus texnika va yirik qurilishlar uchun.",
+          descRu: 'Сверхмощный промышленный гайковёрт с моментом 1500 Нм и аккумулятором 6 А/ч. Создан для грузового шиномонтажа, спецтехники и тяжёлых конструкций.',
+          specsListUz: [{ k: 'Model', v: 'XCW2000' }, { k: 'Kuchlanish', v: '21 volt, 6 A/soat' }, { k: 'Aylanish tezligi', v: '500–3000 ayl/min' }, { k: 'Maks. moment', v: '1500 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCW2000' }, { k: 'Напряжение', v: '21 вольт, 6 А/ч' }, { k: 'Частота вращения', v: '500–3000 об/мин' }, { k: 'Макс. крутящий момент', v: '1500 Нм' }] },
+        { id: 204, model: 'XCW500V', category: 'wrenches', name: 'ONEX XCW500V Treshyotkali Kalit', nameRu: 'ONEX XCW500V Трещоточный ключ', voltLabel: '21V · 500 Nm', price: 890000, image: '/assets/products/xcw500v.jpg', cardImage: '/assets/products/xcw500v_card.jpg', extraImage: IMG_ANGLE_REAL,
+          shortUz: '21V · 4 A/soat · Tor joylar uchun burchakli · 500 Nm', shortRu: '21V · 4 А/ч · Угловой для труднодоступных мест · 500 Нм',
+          descUz: "Dvigatel bo'limi va tor joylardagi gaykalarni yechish uchun maxsus burchakli treshyotka kaliti. 500 Nm quvvat va 3500 ayl/min tezlik, maxsus sariq keysda.",
+          descRu: 'Аккумуляторный угловой трещоточный ключ для работы в моторном отсеке и труднодоступных узлах. Крутящий момент 500 Нм при компактной головке.',
+          specsListUz: [{ k: 'Model', v: 'XCW500V' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Aylanish tezligi', v: '500–3500 ayl/min' }, { k: 'Maks. moment', v: '500 Nm' }],
+          specsListRu: [{ k: 'Модель', v: 'XCW500V' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Частота вращения', v: '500–3500 об/мин' }, { k: 'Макс. крутящий момент', v: '500 Нм' }] },
+
+        { id: 301, model: 'XCH2-26PRO', category: 'hammers_grinders', name: 'ONEX XCH2-26PRO Perforator', nameRu: 'ONEX XCH2-26PRO Перфоратор', voltLabel: '21V · 2.6 J', price: 1180000, image: '/assets/products/xch2_26pro.jpg', cardImage: '/assets/products/xch2_26pro_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · 2.6 J zarba · 900–6200 zarba/min', shortRu: '21V · 4 А/ч · Энергия удара 2.6 Дж · 900–6200 уд/мин',
+          descUz: "Simsiz SDS-Plus perforator. 2.6 J zarba kuchi bilan beton, g'isht va toshni tez teshadi hamda buzish rejimida ishlaydi. Elektr rozetkasisiz to'liq erkinlik.",
+          descRu: 'Беспроводной перфоратор SDS-Plus с энергией удара 2.6 Дж и частотой до 6200 уд/мин. Уверенно бурит бетон, кирпич и камень без привязки к розетке.',
+          specsListUz: [{ k: 'Model', v: 'XCH2-26PRO' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Zarba energiyasi', v: '2.6 J' }, { k: 'Zarba chastotasi', v: '900–6200 zarba/min' }],
+          specsListRu: [{ k: 'Модель', v: 'XCH2-26PRO' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Энергия удара', v: '2.6 Дж' }, { k: 'Частота ударов', v: '900–6200 уд/мин' }] },
+        { id: 302, model: 'XAG125PRO', category: 'hammers_grinders', name: 'ONEX XAG125PRO Bolgarka (USHM)', nameRu: 'ONEX XAG125PRO Болгарка (УШМ)', voltLabel: '21V · 125 mm', price: 760000, image: '/assets/products/xag125pro.jpg', cardImage: '/assets/products/xag125pro_card.jpg', extraImage: IMG_RASM_FULL,
+          shortUz: '21V · 4 A/soat · 125 mm disk · 0–10000 ayl/min', shortRu: '21V · 4 А/ч · Диск 125 мм · 0–10000 об/мин',
+          descUz: "Cho'tkasiz motorli 125 mm akkumulyatorli bolgarka. Metall, armatura, kafel va tosh kesish hamda silliqlash uchun qulay himoya kojuxi bilan.",
+          descRu: 'Аккумуляторная углошлифовальная машина (УШМ) 125 мм с бесщёточным двигателем. Плавный пуск, защита от перегрузки и высокая скорость реза металла и камня.',
+          specsListUz: [{ k: 'Model', v: 'XAG125PRO' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Maks. aylanish', v: '0–10000 ayl/min' }, { k: 'Disk diametri', v: '125 mm' }],
+          specsListRu: [{ k: 'Модель', v: 'XAG125PRO' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Max число оборотов', v: '0–10000 об/мин' }, { k: 'Диаметр лезвия', v: '125 мм' }] },
+
+        { id: 401, model: 'XBSH32', category: 'garden_saws', name: "ONEX XBSH32 Bog' Qaychisi", nameRu: 'ONEX XBSH32 Садовые ножницы', voltLabel: '21V · 32 mm', price: 690000, image: '/assets/products/xbsh32.jpg', cardImage: '/assets/products/xbsh32_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: "21V · 2 A/soat · 0–2200 ayl/min · 32 mm tig'", shortRu: '21V · 2 А/ч · 0–2200 об/мин · Лезвие 32 мм',
+          descUz: "Daraxt va uzum shoxlarini bir bosishda silliq kesuvchi akkumulyatorli bog' qaychisi (sekator). 32 mm gacha qalinlikdagi shoxlarni qo'lni charchatmasdan qirqadi.",
+          descRu: 'Аккумуляторный садовый секатор для быстрой обрезки веток и виноградников диаметром до 32 мм. Острые лезвия из закалённой стали и лёгкий вес.',
+          specsListUz: [{ k: 'Model', v: 'XBSH32' }, { k: 'Kuchlanish', v: '21 volt, 2 A/soat' }, { k: 'Aylanish tezligi', v: '0–2200 ayl/min' }, { k: 'Kesish diametri', v: '32 mm' }],
+          specsListRu: [{ k: 'Модель', v: 'XBSH32' }, { k: 'Напряжение', v: '21 вольт, 2 А/ч' }, { k: 'Частота вращения', v: '0–2200 об/мин' }, { k: 'Диаметр лезвия', v: '32 мм' }] },
+        { id: 402, model: 'XBSH40', category: 'garden_saws', name: "ONEX XBSH40 Bog' Qaychisi Pro", nameRu: 'ONEX XBSH40 Садовые ножницы Pro', voltLabel: '21V · 40 mm', price: 890000, image: '/assets/products/xbsh40.jpg', cardImage: '/assets/products/xbsh40_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: "21V · 4 A/soat · 0–18000 ayl/min · 40 mm tig'", shortRu: '21V · 4 А/ч · 0–18000 об/мин · Лезвие 40 мм',
+          descUz: "Kattaroq 40 mm tig' va 4 A/soat batareyaga ega kuchaytirilgan bog' sekatori. Katta bog'lar va intensiv mavsumiy butash ishlari uchun mo'ljallangan.",
+          descRu: 'Усиленный аккумуляторный секатор с увеличенным раскрытием лезвия до 40 мм и батареей 4 А/ч для крупных садовых хозяйств.',
+          specsListUz: [{ k: 'Model', v: 'XBSH40' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Aylanish tezligi', v: '0–18000 ayl/min' }, { k: 'Kesish diametri', v: '40 mm' }],
+          specsListRu: [{ k: 'Модель', v: 'XBSH40' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Частота вращения', v: '0–18000 об/мин' }, { k: 'Диаметр лезвия', v: '40 мм' }] },
+        { id: 403, model: 'XCHS10', category: 'garden_saws', name: 'ONEX XCHS10 Zanjirli Arra 10"', nameRu: 'ONEX XCHS10 Цепная пила 10"', voltLabel: '21V · 10" shina', price: 820000, image: '/assets/products/xchs10.jpg', cardImage: '/assets/products/xchs10_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · Shina 10" · 0–50000 ayl/min', shortRu: '21V · 4 А/ч · Шина 10" · 0–50000 об/мин',
+          descUz: "10 dyuymli shinaga ega ixcham akkumulyatorli zanjirli arra. Shox kesish, taxta arralash va bog'-rog' ishlarida yuqori aniqlik va qulaylik beradi.",
+          descRu: 'Компактная аккумуляторная цепная пила с шиной 10 дюймов. Отличный баланс веса для обрезки деревьев, заготовки дров и плотницких работ.',
+          specsListUz: [{ k: 'Model', v: 'XCHS10' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Shina uzunligi', v: '10" (25 sm)' }, { k: 'Yuksiz tezlik', v: '0–50000 ayl/min' }],
+          specsListRu: [{ k: 'Модель', v: 'XCHS10' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Длина шины', v: '10" (25 см)' }, { k: 'Скорость холостого хода', v: '0–50000 об/мин' }] },
+        { id: 404, model: 'XCHS12', category: 'garden_saws', name: 'ONEX XCHS12 Zanjirli Arra 12"', nameRu: 'ONEX XCHS12 Цепная пила 12"', voltLabel: '21V · 12" shina', price: 960000, image: '/assets/products/xchs12.jpg', cardImage: '/assets/products/xchs12_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · Shina 12" · 0–50000 ayl/min', shortRu: '21V · 4 А/ч · Шина 12" · 0–50000 об/мин',
+          descUz: "Uzaytirilgan 12 dyuymli shinali kuchli akkumulyatorli zanjirli arra. Qalin g'o'la, to'sin va daraxt tanalarini benzin hidi va shovqinsiz tez kesadi.",
+          descRu: 'Мощная аккумуляторная цепная пила с удлинённой шиной 12 дюймов. Справляется с толстыми брёвнами и брусом без шума и выхлопов.',
+          specsListUz: [{ k: 'Model', v: 'XCHS12' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Shina uzunligi', v: '12" (30 sm)' }, { k: 'Yuksiz tezlik', v: '0–50000 ayl/min' }],
+          specsListRu: [{ k: 'Модель', v: 'XCHS12' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Длина шины', v: '12" (30 см)' }, { k: 'Скорость холостого хода', v: '0–50000 об/мин' }] },
+
+        { id: 501, model: 'XBC01', category: 'blowers', name: 'ONEX XBC01 Turbosushka (Turbo Fan)', nameRu: 'ONEX XBC01 Турбосушка (Turbo Fan)', voltLabel: '21V · 52 m/s', price: 650000, image: '/assets/products/xbc01.jpg', cardImage: '/assets/products/xbc01_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · 52 m/s · 590 m³/soat unumdorlik', shortRu: '21V · 4 А/ч · 52 м/с · Производительность 590 м³/ч',
+          descUz: "590 m³/soat havo oqimiga ega kuchli ixcham turbosushka. Avtomobil yuvishdan keyin quritish, chang va qirindilarni tozalash hamda olov yoqishda juda qulay.",
+          descRu: 'Мощный компактный турбовентилятор со скоростью потока 52 м/с и производительностью 590 м³/ч. Идеален для бесконтактной сушки авто и обдува техники.',
+          specsListUz: [{ k: 'Model', v: 'XBC01' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Shamol tezligi', v: '52 m/s' }, { k: 'Unumdorlik', v: '590 m³/soat' }],
+          specsListRu: [{ k: 'Модель', v: 'XBC01' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Скорость ветра', v: '52 м/с' }, { k: 'Производительность', v: '590 м³/ч' }] },
+        { id: 502, model: 'XBC02', category: 'blowers', name: 'ONEX XBC02 Havo Puflagich', nameRu: 'ONEX XBC02 Воздуходувка', voltLabel: '21V · 50 m/s', price: 740000, image: '/assets/products/xbc02.jpg', cardImage: '/assets/products/xbc02_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: '21V · 4 A/soat · 0–20000 ayl/min · 50 m/s', shortRu: '21V · 4 А/ч · 0–20000 об/мин · 50 м/сек',
+          descUz: "Uzun trubali akkumulyatorli havo puflagich. Hovli, bog', ustaxona va qurilish maydonidagi barg, chang va chiqindilarni soniyalar ichida tozalaydi.",
+          descRu: 'Аккумуляторная воздуходувка с направленным соплом и скоростью потока 50 м/с для быстрой уборки листвы, опилок и строительной пыли.',
+          specsListUz: [{ k: 'Model', v: 'XBC02' }, { k: 'Kuchlanish', v: '21 volt, 4 A/soat' }, { k: 'Aylanish tezligi', v: '0–20000 ayl/min' }, { k: 'Shamol tezligi', v: '50 m/sek' }],
+          specsListRu: [{ k: 'Модель', v: 'XBC02' }, { k: 'Напряжение', v: '21 вольт, 4 А/ч' }, { k: 'Частота вращения', v: '0–20000 об/мин' }, { k: 'Скорость ветра', v: '50 м/сек' }] },
+
+        { id: 601, model: 'XDA2-1', category: 'combos', name: "ONEX XDA2-1 (2-in-1 To'plam)", nameRu: 'ONEX XDA2-1 (Набор 2-в-1)', voltLabel: '21V · 2-in-1', price: 1450000, image: '/assets/products/xda2_1.jpg', cardImage: '/assets/products/xda2_1_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: 'Shurupovyort + Bolgarka 125mm · 2x AKB + Keys', shortRu: 'Шуруповёрт + Болгарка 125 мм · 2x АКБ + Кейс',
+          descUz: "Ustalar uchun eng ommabop 2-in-1 to'plam: zarbali shurupovyort va 125 mm bolgarka bitta mustahkam keysda. 2 ta batareya va zaryadlovchi bilan.",
+          descRu: 'Универсальный набор 2-в-1 в прочном кейсе: ударный шуруповёрт и болгарка 125 мм на единой аккумуляторной платформе 21 В.',
+          specsListUz: [{ k: 'Model', v: 'XDA2-1' }, { k: 'Tarkibi', v: 'Shurupovyort + Bolgarka' }, { k: 'Kuchlanish', v: '21 volt Li-Ion' }, { k: 'Kafolat', v: '12 oy rasmiy' }],
+          specsListRu: [{ k: 'Модель', v: 'XDA2-1' }, { k: 'Состав набора', v: 'Шуруповёрт + Болгарка' }, { k: 'Платформа', v: '21 вольт Li-Ion' }, { k: 'Гарантия', v: '12 месяцев' }] },
+        { id: 602, model: 'XAW2-1', category: 'combos', name: "ONEX XAW2-1 (2-in-1 To'plam)", nameRu: 'ONEX XAW2-1 (Набор 2-в-1)', voltLabel: '21V · 2-in-1', price: 1590000, image: '/assets/products/xaw2_1.jpg', cardImage: '/assets/products/xaw2_1_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: 'Gaykavyort + Bolgarka 125mm · 2x AKB + Keys', shortRu: 'Гайковёрт + Болгарка 125 мм · 2x АКБ + Кейс',
+          descUz: "Avtoservis va metall ustalari uchun maxsus to'plam: kuchli gaykavyort hamda 125 mm simsiz bolgarka bitta jamlanmada.",
+          descRu: 'Специализированный набор 2-в-1 для металломонтажа и СТО: мощный ударный гайковёрт и беспроводная болгарка 125 мм.',
+          specsListUz: [{ k: 'Model', v: 'XAW2-1' }, { k: 'Tarkibi', v: 'Gaykavyort + Bolgarka' }, { k: 'Kuchlanish', v: '21 volt Li-Ion' }, { k: 'Kafolat', v: '12 oy rasmiy' }],
+          specsListRu: [{ k: 'Модель', v: 'XAW2-1' }, { k: 'Состав набора', v: 'Гайковёрт + Болгарка' }, { k: 'Платформа', v: '21 вольт Li-Ion' }, { k: 'Гарантия', v: '12 месяцев' }] },
+        { id: 603, model: 'XDW2-1', category: 'combos', name: "ONEX XDW2-1 (2-in-1 To'plam)", nameRu: 'ONEX XDW2-1 (Набор 2-в-1)', voltLabel: '21V · 2-in-1', price: 1520000, image: '/assets/products/xdw2_1.jpg', cardImage: '/assets/products/xdw2_1_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: 'Shurupovyort + Gaykavyort · 2x AKB + Keys', shortRu: 'Шуруповёрт + Гайковёрт · 2x АКБ + Кейс',
+          descUz: "Yig'uv va montaj ishlari uchun qulay juftlik: zarbali shurupovyort hamda yuqori momentli gaykavyort bitta professional to'plamda.",
+          descRu: 'Сборочный дуэт 2-в-1: ударный шуруповёрт и мощный гайковёрт 21 В для быстрого монтажа и работы с крупным крепежом.',
+          specsListUz: [{ k: 'Model', v: 'XDW2-1' }, { k: 'Tarkibi', v: 'Shurupovyort + Gaykavyort' }, { k: 'Kuchlanish', v: '21 volt Li-Ion' }, { k: 'Kafolat', v: '12 oy rasmiy' }],
+          specsListRu: [{ k: 'Модель', v: 'XDW2-1' }, { k: 'Состав набора', v: 'Шуруповёрт + Гайковёрт' }, { k: 'Платформа', v: '21 вольт Li-Ion' }, { k: 'Гарантия', v: '12 месяцев' }] },
+        { id: 604, model: 'XDW2-1PRO', category: 'combos', name: "ONEX XDW2-1PRO (2-in-1 PRO To'plam)", nameRu: 'ONEX XDW2-1PRO (Набор 2-в-1 PRO)', voltLabel: '21V · Brushless PRO', price: 1780000, image: '/assets/products/xdw2_1pro.jpg', cardImage: '/assets/products/xdw2_1pro_card.jpg', extraImage: IMG_XDW_REAL,
+          shortUz: 'Brushless Shurupovyort + Gaykavyort · Metall patron', shortRu: 'Бесщёточный Шуруповёрт + Гайковёрт PRO',
+          descUz: "Cho'tkasiz (BL Motor) PRO juftlik: zarbali shurupovyort va yuqori momentli gaykavyort (21V 4.0Ah). Og'ir kunlik yuklamalar uchun.",
+          descRu: 'Усиленный PRO-комплект с бесщёточными двигателями (BL Motor): ударный шуруповёрт и высокомоментный гайковёрт 21В 4.0Ач.',
+          specsListUz: [{ k: 'Model', v: 'XDW2-1PRO' }, { k: 'Tarkibi', v: 'PRO Shurupovyort + Gaykavyort' }, { k: 'Motor turi', v: "Cho'tkasiz (BL Motor)" }, { k: 'Kuchlanish', v: '21 volt · 4.0Ah Li-Pro' }],
+          specsListRu: [{ k: 'Модель', v: 'XDW2-1PRO' }, { k: 'Состав набора', v: 'PRO Шуруповёрт + Гайковёрт' }, { k: 'Двигатель', v: 'Бесщёточный (BL Motor)' }, { k: 'Платформа', v: '21 вольт · 4.0Ач Li-Pro' }] },
+        { id: 605, model: 'XPRO3-1', category: 'combos', name: "ONEX XPRO3-1 (3-in-1 PRO To'plam)", nameRu: 'ONEX XPRO3-1 (Набор 3-в-1 PRO)', voltLabel: '21V · 3-in-1', price: 2390000, image: '/assets/products/xpro3_1.jpg', cardImage: '/assets/products/xpro3_1_card.jpg', extraImage: IMG_CASE_KIT,
+          shortUz: 'Shurupovyort + Bolgarka + Perforator', shortRu: 'Шуруповёрт + Болгарка + Перфоратор',
+          descUz: "Qurilish brigadalari uchun asosiy uchlik: shurupovyort, 125 mm bolgarka va SDS-Plus perforator bir to'plamda. Barcha asosiy ishlarni qoplaydi.",
+          descRu: 'Базовый строительный набор 3-в-1: ударный шуруповёрт, болгарка 125 мм и перфоратор SDS-Plus на единых батареях 21 В.',
+          specsListUz: [{ k: 'Model', v: 'XPRO3-1' }, { k: 'Tarkibi', v: 'Shurupovyort + Bolgarka + Perforator' }, { k: 'Kuchlanish', v: '21 volt Li-Ion' }, { k: 'Kafolat', v: '12 oy rasmiy' }],
+          specsListRu: [{ k: 'Модель', v: 'XPRO3-1' }, { k: 'Состав набора', v: 'Шуруповёрт + Болгарка + Перфоратор' }, { k: 'Платформа', v: '21 вольт Li-Ion' }, { k: 'Гарантия', v: '12 месяцев' }] },
+        { id: 606, model: 'XPR04-1', category: 'combos', name: "ONEX XPR04-1 (4-in-1 PRO To'plam)", nameRu: 'ONEX XPR04-1 (Набор 4-в-1 PRO)', voltLabel: '21V · 4-in-1', price: 2950000, image: '/assets/products/xpr04_1.jpg', cardImage: '/assets/products/xpr04_1_card.jpg', extraImage: IMG_LINEUP,
+          shortUz: 'Shurupovyort + Gaykavyort + Bolgarka + Perforator', shortRu: 'Шуруповёрт + Гайковёрт + Болгарка + Перфоратор',
+          descUz: "Eng to'liq 4-in-1 professional ustaxona jamlanmasi: shurupovyort, kuchli gaykavyort, bolgarka va perforator bitta tizimda. Alohida sotib olishdan ancha tejamli.",
+          descRu: 'Максимальный профессиональный набор 4-в-1: шуруповёрт, гайковёрт, болгарка и перфоратор в одном комплекте. Выгоднее покупки по отдельности.',
+          specsListUz: [{ k: 'Model', v: 'XPR04-1' }, { k: 'Tarkibi', v: '4 ta asosiy 21V asbob' }, { k: 'Kuchlanish', v: '21 volt Li-Ion' }, { k: 'Kafolat', v: '12 oy rasmiy' }],
+          specsListRu: [{ k: 'Модель', v: 'XPR04-1' }, { k: 'Состав набора', v: 'Шуруповёрт + Гайковёрт + УШМ + Перфоратор' }, { k: 'Платформа', v: '21 вольт Li-Ion' }, { k: 'Гарантия', v: '12 месяцев' }] },
+
+        { id: 701, model: 'ONE-5C', category: 'batteries', name: 'ONEX ONE-5C Batareya 21V 2Ah', nameRu: 'ONEX ONE-5C Аккумулятор 21V 2 А/ч', voltLabel: '21V · 2 A/soat', price: 240000, image: '/assets/products/one_5c.jpg', cardImage: '/assets/products/one_5c_card.jpg', extraImage: '/assets/products/charger_21v.jpg',
+          shortUz: '21V · 2 A/soat · Yengil Li-Ion akkumulyator', shortRu: '21V · 2 А/ч · Лёгкий Li-Ion аккумулятор',
+          descUz: "Barcha ONEX 21V asboblarga mos tushadigan ixcham va yengil 2 A/soat Li-Ion batareya. Qizish va qisqa tutashuvdan aqlli himoya tizimiga ega.",
+          descRu: 'Компактная литий-ионная батарея 21 В ёмкостью 2 А/ч. Совместима со всей линейкой ONEX 21V, оснащена защитой от перегрева и перегрузки.',
+          specsListUz: [{ k: 'Model', v: 'ONE-5C' }, { k: 'Kuchlanish', v: '21 volt' }, { k: "Sig'imi", v: '2 A/soat' }, { k: 'Batareya turi', v: 'Li-Ion' }],
+          specsListRu: [{ k: 'Модель', v: 'ONE-5C' }, { k: 'Напряжение', v: '21 вольт' }, { k: 'Ёмкость', v: '2 А/ч' }, { k: 'Тип ячеек', v: 'Li-Ion' }] },
+        { id: 702, model: 'ONE-10C', category: 'batteries', name: 'ONEX ONE-10C Batareya 21V 4Ah', nameRu: 'ONEX ONE-10C Аккумулятор 21V 4 А/ч', voltLabel: '21V · 4 A/soat', price: 360000, image: '/assets/products/one_10c.jpg', cardImage: '/assets/products/one_10c_card.jpg', extraImage: '/assets/products/charger_21v.jpg',
+          shortUz: '21V · 4 A/soat · Ikki baravar uzoq ishlash', shortRu: '21V · 4 А/ч · Повышенная ёмкость Li-Ion',
+          descUz: "Perforator, bolgarka, zanjirli arra va kuchli gaykavyortlar uchun mo'ljallangan 4 A/soat sig'imli yuqori quvvatli akkumulyator.",
+          descRu: 'Аккумулятор повышенной ёмкости 21 В / 4 А/ч для энергоёмких инструментов: перфораторов, УШМ, цепных пил и гайковёртов.',
+          specsListUz: [{ k: 'Model', v: 'ONE-10C' }, { k: 'Kuchlanish', v: '21 volt' }, { k: "Sig'imi", v: '4 A/soat' }, { k: 'Batareya turi', v: 'Li-Ion Pro' }],
+          specsListRu: [{ k: 'Модель', v: 'ONE-10C' }, { k: 'Напряжение', v: '21 вольт' }, { k: 'Ёмкость', v: '4 А/ч' }, { k: 'Тип ячеек', v: 'Li-Ion Pro' }] },
+        { id: 703, model: 'ONEX-ADP21', category: 'batteries', name: 'ONEX 21V 2A Zaryadlash Adapteri', nameRu: 'ONEX 21V 2А Адаптер для зарядки', voltLabel: '21V · 2 A/soat', price: 120000, image: '/assets/products/adapter_21v.jpg', cardImage: '/assets/products/adapter_21v_card.jpg', extraImage: '/assets/products/one_5c.jpg',
+          shortUz: 'Kirish 110–240V · Chiqish 21V 2A/soat', shortRu: 'Вход 110–240В · Выход 21В, 2А/ч',
+          descUz: "Ixcham tarmoq zaryadlash adapteri. 110–240V kuchlanishda barqaror ishlaydi va ONEX 21V batareyalarini xavfsiz quvvatlaydi.",
+          descRu: 'Компактный сетевой адаптер для зарядки аккумуляторов ONEX 21V. Автоматическое отключение при полном заряде.',
+          specsListUz: [{ k: 'Turi', v: 'Zaryadlash adapteri' }, { k: 'Kirish', v: '110–240V, 50–60Hz' }, { k: 'Chiqish', v: '21V, 2 A/soat' }, { k: 'Kafolat', v: '12 oy' }],
+          specsListRu: [{ k: 'Тип', v: 'Адаптер для зарядки' }, { k: 'Вход', v: '110–240В, 50–60Гц' }, { k: 'Выход', v: '21В, 2 А/ч' }, { k: 'Гарантия', v: '12 месяцев' }] },
+        { id: 704, model: 'ONEX-CHG21', category: 'batteries', name: 'ONEX 21V 4A Tezkor Zaryadlovchi', nameRu: 'ONEX 21V 4А Зарядное устройство', voltLabel: '21V · 4 A/soat', price: 190000, image: '/assets/products/charger_21v.jpg', cardImage: '/assets/products/charger_21v_card.jpg', extraImage: '/assets/products/one_10c.jpg',
+          shortUz: 'Kirish 110–240V · Chiqish 21V 4A/soat · Tezkor', shortRu: 'Вход 110–240В · Выход 21В, 4А/ч · Быстрая зарядка',
+          descUz: "Slayder turidagi tezkor zaryadlash stansiyasi. 4 A/soat chiqish toki tufayli batareyalarni oddiy adapterdan ikki baravar tezroq to'ldiradi.",
+          descRu: 'Станция быстрой зарядки слайдерного типа с током 4 А/ч. Заряжает аккумуляторы в 2 раза быстрее стандартного адаптера и оснащена LED-индикацией.',
+          specsListUz: [{ k: 'Turi', v: 'Tezkor zaryadlovchi stansiya' }, { k: 'Kirish', v: '110–240V, 50–60Hz' }, { k: 'Chiqish', v: '21V, 4 A/soat' }, { k: 'Indikator', v: 'LED quvvat holati' }],
+          specsListRu: [{ k: 'Тип', v: 'Зарядное устройство для батареи' }, { k: 'Вход', v: '110–240В, 50–60Гц' }, { k: 'Выход', v: '21В, 4 А/ч' }, { k: 'Индикация', v: 'LED статус заряда' }] }
+      ];
+
+      function getProductGallery(product, lang) {
+        return [
+          product.image,
+          product.cardImage || product.image,
+          product.extraImage || IMG_LINEUP,
+          renderDetailSlideSvg(product, 'kit', lang),
+          renderDetailSlideSvg(product, 'features', lang)
+        ];
+      }
+
+      function getSavedLang() {
+        try { return window.localStorage.getItem(LANG_STORAGE_KEY) === 'ru' ? 'ru' : 'uz'; } catch (_) { return 'uz'; }
+      }
+      function saveLang(next) {
+        try { window.localStorage.setItem(LANG_STORAGE_KEY, next); } catch (_) {}
+      }
+      function escapeHtml(str) {
+        return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function formatPrice(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      }
+
+      let lang = getSavedLang();
+      let activeTab = 'home';
+      let selectedCategoryId = null;
+      let activeProductId = null;
+      let activeSlideIdx = 0;
+      let cart = [];
+      let stockMap = {};
+      let confirmedOrder = null;
+      let formErrorMsg = '';
+      let fieldError = null;
+      let isSubmitting = false;
+
+      const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+      const checkoutState = {
+        name: tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') : '',
+        phone: '',
+        delivery: 'Yetkazib berish',
+        address: '',
+        payment: 'Naqd'
+      };
+
+      function getProductStock(productId) {
+        const key = String(productId);
+        if (Object.prototype.hasOwnProperty.call(stockMap, key)) {
+          const val = Number(stockMap[key]);
+          return Number.isFinite(val) && val > 0 ? Math.floor(val) : 0;
+        }
+        return 10;
+      }
+
+      function getStockBadgeHtml(productId) {
+        const t = TRANSLATIONS[lang];
+        const qty = getProductStock(productId);
+        if (qty <= 0) {
+          return '<div class="stock-badge out-of-stock">' + escapeHtml(t.outOfStock) + '</div>';
+        }
+        const cls = qty <= 3 ? 'low-stock' : 'in-stock';
+        return '<div class="stock-badge ' + cls + ' tabular-nums">' + escapeHtml(t.stockRemaining(qty)) + '</div>';
+      }
+
+      function clampCartToStock() {
+        let changed = false;
+        for (let i = cart.length - 1; i >= 0; i--) {
+          const avail = getProductStock(cart[i].id);
+          if (avail <= 0) {
+            cart.splice(i, 1);
+            changed = true;
+          } else if (cart[i].qty > avail) {
+            cart[i].qty = avail;
+            changed = true;
+          }
+        }
+        return changed;
+      }
+
+      async function fetchStock() {
+        try {
+          const response = await fetch('/api/stock?t=' + Date.now(), { cache: 'no-store' });
+          if (!response.ok) return;
+          const data = await response.json();
+          const nextStock = data && data.stock ? data.stock : data;
+          if (nextStock && typeof nextStock === 'object') {
+            stockMap = nextStock;
+            clampCartToStock();
+            updateUI();
+          }
+        } catch (_) {}
+      }
+
+      const brandHomeBtn = document.getElementById('brandHomeBtn');
+      const langBtnUz = document.getElementById('langBtnUz');
+      const langBtnRu = document.getElementById('langBtnRu');
+      const headerCartBtn = document.getElementById('headerCartBtn');
+      const headerCartBadge = document.getElementById('headerCartBadge');
+      const pageHead = document.getElementById('pageHead');
+      const backBar = document.getElementById('backBar');
+      const backToCatsBtn = document.getElementById('backToCatsBtn');
+      const backBtnLabel = document.getElementById('backBtnLabel');
+      const storeSubtitle = document.getElementById('storeSubtitle');
+      const catalogTitle = document.getElementById('catalogTitle');
+      const catalogCount = document.getElementById('catalogCount');
+      const cardsGrid = document.getElementById('cardsGrid');
+      const aboutView = document.getElementById('aboutView');
+      const aboutTitle = document.getElementById('aboutTitle');
+      const aboutSubtitle = document.getElementById('aboutSubtitle');
+      const aboutDesc = document.getElementById('aboutDesc');
+      const aboutContactsLabel = document.getElementById('aboutContactsLabel');
+      const contactPhoneLabel = document.getElementById('contactPhoneLabel');
+      const contactInstagram = document.getElementById('contactInstagram');
+      const contactTelegram = document.getElementById('contactTelegram');
+      const contactPhone = document.getElementById('contactPhone');
+      const navHomeBtn = document.getElementById('navHomeBtn');
+      const navAboutBtn = document.getElementById('navAboutBtn');
+      const navHomeLabel = document.getElementById('navHomeLabel');
+      const navAboutLabel = document.getElementById('navAboutLabel');
+      const bottomMist = document.getElementById('bottomMist');
+      const floatingCartWrap = document.getElementById('floatingCartWrap');
+      const floatingCartBtn = document.getElementById('floatingCartBtn');
+      const floatingCount = document.getElementById('floatingCount');
+      const floatingLabel = document.getElementById('floatingLabel');
+      const floatingTotal = document.getElementById('floatingTotal');
+
+      const productBackdrop = document.getElementById('productBackdrop');
+      const productModal = document.getElementById('productModal');
+      const pmHeaderMeta = document.getElementById('pmHeaderMeta');
+      const closeProductBtn = document.getElementById('closeProductBtn');
+      const pmBody = document.getElementById('pmBody');
+      const pmFooter = document.getElementById('pmFooter');
+
+      const sheetBackdrop = document.getElementById('sheetBackdrop');
+      const cartSheet = document.getElementById('cartSheet');
+      const sheetTitle = document.getElementById('sheetTitle');
+      const closeSheetBtn = document.getElementById('closeSheetBtn');
+      const sheetBody = document.getElementById('sheetBody');
+      const toastEl = document.getElementById('toast');
+
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+      }
+
+      function getCartStats() {
+        let totalQty = 0, totalAmount = 0;
+        for (let i = 0; i < cart.length; i++) {
+          totalQty += cart[i].qty;
+          totalAmount += cart[i].price * cart[i].qty;
+        }
+        return { totalQty: totalQty, totalAmount: totalAmount };
+      }
+
+      function getItemQty(productId) {
+        for (let i = 0; i < cart.length; i++) {
+          if (cart[i].id === productId) return cart[i].qty;
+        }
+        return 0;
+      }
+
+      function addToCart(productId, notifyUser) {
+        const product = PRODUCTS.find(function (p) { return p.id === productId; });
+        if (!product) return;
+        const t = TRANSLATIONS[lang];
+        const available = getProductStock(productId);
+        if (available <= 0) { showToast(t.outOfStock); return; }
+        const currentQty = getItemQty(productId);
+        if (currentQty >= available) { showToast(t.maxStockReached(available)); return; }
+
+        confirmedOrder = null;
+        const existing = cart.find(function (item) { return item.id === productId; });
+        if (existing) existing.qty += 1;
+        else cart.push(Object.assign({}, product, { qty: 1 }));
+        haptic('light');
+        if (notifyUser) showToast(t.toastAdded);
+        updateUI();
+      }
+
+      function changeQty(productId, delta) {
+        const idx = cart.findIndex(function (item) { return item.id === productId; });
+        if (idx === -1) return;
+        const t = TRANSLATIONS[lang];
+        const available = getProductStock(productId);
+        if (delta > 0 && cart[idx].qty + delta > available) {
+          showToast(t.maxStockReached(available));
+          return;
+        }
+        cart[idx].qty += delta;
+        if (cart[idx].qty <= 0) cart.splice(idx, 1);
+        haptic('light');
+        updateUI();
+      }
+
+      let holdTimerId = null, holdIntervalId = null, holdResetClickTimerId = null;
+      let holdDidRepeat = false, holdProductId = null, holdDelta = 0, holdStepCount = 0;
+
+      function stopHoldRepeat() {
+        if (holdTimerId !== null) { clearTimeout(holdTimerId); holdTimerId = null; }
+        if (holdIntervalId !== null) { clearTimeout(holdIntervalId); holdIntervalId = null; }
+        holdProductId = null; holdDelta = 0; holdStepCount = 0;
+      }
+
+      function applyQtyStepInPlace(productId, delta) {
+        const idx = cart.findIndex(function (item) { return item.id === productId; });
+        if (idx === -1) { stopHoldRepeat(); return; }
+        const t = TRANSLATIONS[lang];
+        const available = getProductStock(productId);
+        if (delta > 0 && cart[idx].qty >= available) {
+          stopHoldRepeat();
+          showToast(t.maxStockReached(available));
+          return;
+        }
+        const nextQty = cart[idx].qty + delta;
+        if (nextQty <= 0) {
+          cart.splice(idx, 1);
+          stopHoldRepeat();
+          haptic('light');
+          updateUI();
+          return;
+        }
+        cart[idx].qty = nextQty;
+        haptic('light');
+
+        const reachedMax = nextQty >= available;
+        const cardQtyEl = cardsGrid.querySelector('[data-card-qty-val="' + productId + '"]');
+        if (cardQtyEl) cardQtyEl.textContent = nextQty + ' ' + t.unitShort;
+        const cardIncBtn = cardsGrid.querySelector('[data-qty-id="' + productId + '"][data-delta="1"]');
+        if (cardIncBtn) cardIncBtn.disabled = reachedMax;
+
+        const pmQtyEl = document.getElementById('pmStepperQty');
+        if (pmQtyEl && activeProductId === productId) pmQtyEl.textContent = nextQty + ' ' + t.unitShort;
+        const pmIncBtn = document.getElementById('pmIncBtn');
+        if (pmIncBtn && activeProductId === productId) pmIncBtn.disabled = reachedMax;
+
+        const cartQtyEl = sheetBody.querySelector('[data-cart-qty-val="' + productId + '"]');
+        if (cartQtyEl) cartQtyEl.textContent = nextQty;
+        const cartIncBtn = sheetBody.querySelector('[data-qty-id="' + productId + '"][data-delta="1"]');
+        if (cartIncBtn) cartIncBtn.disabled = reachedMax;
+        const cartSubEl = sheetBody.querySelector('[data-cart-sub-val="' + productId + '"]');
+        if (cartSubEl) cartSubEl.innerHTML = formatPrice(cart[idx].price * nextQty) + ' ' + escapeHtml(t.currency);
+        const cartSumEl = document.getElementById('cartSummaryTotal');
+        if (cartSumEl) {
+          const stats = getCartStats();
+          cartSumEl.innerHTML = formatPrice(stats.totalAmount) + ' <span>' + escapeHtml(t.currency) + '</span>';
+        }
+        updateCartIndicators();
+        if (delta > 0 && reachedMax) stopHoldRepeat();
+      }
+
+      function scheduleNextHoldTick() {
+        if (holdProductId === null) return;
+        const delay = holdStepCount >= 10 ? 55 : holdStepCount >= 4 ? 85 : 120;
+        holdIntervalId = setTimeout(function () {
+          if (holdProductId === null) return;
+          holdDidRepeat = true; holdStepCount += 1;
+          applyQtyStepInPlace(holdProductId, holdDelta);
+          if (holdProductId !== null) scheduleNextHoldTick();
+        }, delay);
+      }
+
+      function startHoldRepeat(productId, delta) {
+        stopHoldRepeat();
+        if (holdResetClickTimerId !== null) { clearTimeout(holdResetClickTimerId); holdResetClickTimerId = null; }
+        holdDidRepeat = false; holdProductId = productId; holdDelta = delta; holdStepCount = 0;
+        holdTimerId = setTimeout(function () {
+          if (holdProductId === null) return;
+          holdDidRepeat = true; holdStepCount = 1;
+          applyQtyStepInPlace(holdProductId, holdDelta);
+          if (holdProductId !== null) scheduleNextHoldTick();
+        }, 320);
+      }
+
+      function releaseHoldRepeat() {
+        if (holdProductId === null && holdTimerId === null && holdIntervalId === null) return;
+        stopHoldRepeat();
+        if (holdDidRepeat) {
+          if (holdResetClickTimerId !== null) clearTimeout(holdResetClickTimerId);
+          holdResetClickTimerId = setTimeout(function () { holdDidRepeat = false; holdResetClickTimerId = null; }, 80);
+        }
+      }
+
+      function syncLanguageMeta() {
+        const t = TRANSLATIONS[lang];
+        document.documentElement.lang = lang;
+        document.title = t.docTitle;
+        langBtnUz.classList.toggle('active', lang === 'uz');
+        langBtnRu.classList.toggle('active', lang === 'ru');
+        langBtnUz.setAttribute('aria-pressed', String(lang === 'uz'));
+        langBtnRu.setAttribute('aria-pressed', String(lang === 'ru'));
+        headerCartBtn.setAttribute('aria-label', t.openCartAria);
+        storeSubtitle.textContent = t.brandSubtitle;
+        backBtnLabel.textContent = t.backToCategories;
+        sheetTitle.textContent = t.cartTitle;
+        cartSheet.setAttribute('aria-label', t.cartTitle);
+        closeSheetBtn.setAttribute('aria-label', t.closeAria);
+        closeProductBtn.setAttribute('aria-label', t.closeAria);
+        navHomeLabel.textContent = t.navHome;
+        navAboutLabel.textContent = t.navAbout;
+        aboutTitle.textContent = t.aboutTitle;
+        aboutSubtitle.textContent = t.aboutSubtitle;
+        aboutDesc.textContent = t.aboutDesc;
+        aboutContactsLabel.textContent = t.aboutContactsLabel;
+        contactPhoneLabel.textContent = t.contactPhoneLabel;
+        aboutView.setAttribute('aria-label', t.navAbout);
+      }
+
+      function syncTelegramBackButton() {
+        if (!tg || !tg.BackButton) return;
+        try {
+          if (cartSheet.classList.contains('open') || productModal.classList.contains('open') || activeTab === 'about' || selectedCategoryId) {
+            tg.BackButton.show();
+          } else {
+            tg.BackButton.hide();
+          }
+        } catch (_) {}
+      }
+
+      if (tg && tg.BackButton && tg.BackButton.onClick) {
+        tg.BackButton.onClick(function () {
+          if (cartSheet.classList.contains('open')) closeBottomSheet();
+          else if (productModal.classList.contains('open')) closeProductModal();
+          else if (activeTab === 'about') switchTab('home');
+          else if (selectedCategoryId) goToCategories();
+        });
+      }
+
+      function switchTab(nextTab) {
+        activeTab = nextTab;
+        haptic('light');
+        renderCatalogView();
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      }
+
+      function renderCatalogView() {
+        const t = TRANSLATIONS[lang];
+        navHomeBtn.classList.toggle('active', activeTab === 'home');
+        navAboutBtn.classList.toggle('active', activeTab === 'about');
+
+        if (activeTab === 'about') {
+          pageHead.style.display = 'none';
+          cardsGrid.style.display = 'none';
+          aboutView.classList.add('active');
+          bottomMist.classList.add('hidden');
+          syncTelegramBackButton();
+          return;
+        }
+
+        pageHead.style.display = 'flex';
+        cardsGrid.style.display = 'grid';
+        aboutView.classList.remove('active');
+
+        if (!selectedCategoryId) {
+          backBar.style.display = 'none';
+          catalogTitle.textContent = t.categoriesTitle;
+          catalogCount.textContent = t.categoriesCount(CATEGORIES.length);
+
+          cardsGrid.innerHTML = CATEGORIES.map(function (cat) {
+            const count = PRODUCTS.filter(function (p) { return p.category === cat.id; }).length;
+            const name = lang === 'ru' ? cat.nameRu : cat.nameUz;
+            const desc = lang === 'ru' ? cat.descRu : cat.descUz;
+            return '<button type="button" class="category-card scroll-card" data-cat-id="' + escapeHtml(cat.id) + '">' +
+              '<div class="category-img-box"><img src="' + escapeHtml(resolveAsset(cat.image)) + '" data-orig-src="' + escapeHtml(cat.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" /></div>' +
+              '<div class="category-body"><div class="category-count tabular-nums">' + escapeHtml(t.modelsCount(count)) + '</div>' +
+              '<h2 class="category-name">' + escapeHtml(name) + '</h2><p class="category-desc">' + escapeHtml(desc) + '</p>' +
+              '<div class="category-enter"><span>' + escapeHtml(t.openCategory) + '</span><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></div></div>' +
+              '<div class="scroll-veil" data-scroll-veil="true" aria-hidden="true"></div></button>';
+          }).join('');
+        } else {
+          const catObj = CATEGORIES.find(function (c) { return c.id === selectedCategoryId; });
+          const catProducts = PRODUCTS.filter(function (p) { return p.category === selectedCategoryId; });
+          backBar.style.display = 'flex';
+          catalogTitle.textContent = catObj ? (lang === 'ru' ? catObj.nameRu : catObj.nameUz) : '';
+          catalogCount.textContent = t.modelsCount(catProducts.length);
+
+          cardsGrid.innerHTML = catProducts.map(function (product) {
+            const name = lang === 'ru' ? product.nameRu : product.name;
+            const shortDesc = lang === 'ru' ? product.shortRu : product.shortUz;
+            const stock = getProductStock(product.id);
+            const isOutOfStock = stock <= 0;
+            const qty = getItemQty(product.id);
+
+            const actionHtml = isOutOfStock
+              ? '<button type="button" class="add-btn" disabled><svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg><span>' + escapeHtml(t.addToCart) + '</span></button>'
+              : qty === 0
+                ? '<button type="button" class="add-btn" data-add-id="' + product.id + '"><svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg><span>' + escapeHtml(t.addToCart) + '</span></button>'
+                : '<div class="card-stepper"><button type="button" class="stepper-btn" data-qty-id="' + product.id + '" data-delta="-1" aria-label="' + escapeHtml(t.decreaseQty) + '">−</button>' +
+                  '<span class="stepper-qty tabular-nums" data-card-qty-val="' + product.id + '">' + qty + ' ' + escapeHtml(t.unitShort) + '</span>' +
+                  '<button type="button" class="stepper-btn" data-qty-id="' + product.id + '" data-delta="1" aria-label="' + escapeHtml(t.increaseQty) + '"' + (qty >= stock ? ' disabled' : '') + '>+</button></div>';
+
+            return '<article class="product-card scroll-card' + (isOutOfStock ? ' is-out-of-stock' : '') + '" data-open-product="' + product.id + '">' +
+              getStockBadgeHtml(product.id) +
+              '<div class="product-img-box"><img src="' + escapeHtml(resolveAsset(product.image)) + '" data-orig-src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" /></div>' +
+              '<div class="product-body"><div class="product-meta-line"><span class="product-meta-model">' + escapeHtml(product.model) + '</span><span aria-hidden="true">·</span><span class="product-meta-volt">' + escapeHtml(product.voltLabel) + '</span></div>' +
+              '<h3 class="product-title">' + escapeHtml(name) + '</h3><p class="product-specs">' + escapeHtml(shortDesc) + '</p>' +
+              '<div class="product-price tabular-nums">' + formatPrice(product.price) + '<span>' + escapeHtml(t.currency) + '</span></div>' +
+              actionHtml + '</div><div class="scroll-veil" data-scroll-veil="true" aria-hidden="true"></div></article>';
+          }).join('');
+        }
+        scheduleRowScrollClarity();
+        syncTelegramBackButton();
+      }
+
+      function renderProductModal() {
+        if (activeProductId === null) return;
+        const product = PRODUCTS.find(function (p) { return p.id === activeProductId; });
+        if (!product) return;
+
+        const t = TRANSLATIONS[lang];
+        const catObj = CATEGORIES.find(function (c) { return c.id === product.category; });
+        const catName = catObj ? (lang === 'ru' ? catObj.nameRu : catObj.nameUz) : '';
+        const name = lang === 'ru' ? product.nameRu : product.name;
+        const desc = lang === 'ru' ? product.descRu : product.descUz;
+        const specs = lang === 'ru' ? product.specsListRu : product.specsListUz;
+        const gallery = getProductGallery(product, lang);
+        const stock = getProductStock(product.id);
+        const isOutOfStock = stock <= 0;
+
+        if (activeSlideIdx < 0 || activeSlideIdx >= gallery.length) activeSlideIdx = 0;
+        pmHeaderMeta.innerHTML = escapeHtml(catName) + ' · <span>' + escapeHtml(product.model) + '</span>';
+
+        const thumbsHtml = gallery.map(function (src, idx) {
+          return '<button type="button" class="gallery-thumb' + (idx === activeSlideIdx ? ' active' : '') + '" data-thumb-idx="' + idx + '" aria-label="Rasm ' + (idx + 1) + '">' +
+            '<img src="' + escapeHtml(resolveAsset(src)) + '" data-orig-src="' + escapeHtml(src) + '" alt="' + escapeHtml(name) + ' ' + (idx + 1) + '" /></button>';
+        }).join('');
+
+        const specsHtml = specs.map(function (row) {
+          return '<div class="pm-spec-row"><span class="pm-spec-k">' + escapeHtml(row.k) + '</span><span class="pm-spec-v tabular-nums">' + escapeHtml(row.v) + '</span></div>';
+        }).join('');
+
+        pmBody.innerHTML =
+          '<div class="gallery-stage" id="galleryStage"><img src="' + escapeHtml(resolveAsset(gallery[activeSlideIdx])) + '" data-orig-src="' + escapeHtml(gallery[activeSlideIdx]) + '" alt="' + escapeHtml(name) + '" />' +
+          '<button type="button" class="gallery-nav prev" id="galPrevBtn" aria-label="Oldingi"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg></button>' +
+          '<button type="button" class="gallery-nav next" id="galNextBtn" aria-label="Keyingi"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg></button>' +
+          '<div class="gallery-counter tabular-nums">' + (activeSlideIdx + 1) + ' / ' + gallery.length + '</div></div>' +
+          '<div class="gallery-thumbs">' + thumbsHtml + '</div>' +
+          getStockBadgeHtml(product.id) +
+          '<h2 class="pm-title">' + escapeHtml(name) + '</h2><p class="pm-desc">' + escapeHtml(desc) + '</p>' +
+          '<div class="pm-specs-box"><div class="pm-specs-head">' + escapeHtml(t.specsHeading) + '</div>' + specsHtml + '</div>' +
+          '<p class="pm-features-line">' + escapeHtml(t.featuresLine) + '</p>';
+
+        const qty = getItemQty(product.id);
+        const actionBlock = isOutOfStock
+          ? '<button type="button" class="pm-add-btn" id="pmAddBtn" disabled><svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6h15l-1.5 9h-12z"/><path stroke-linecap="round" d="M6 6L5 3H2"/></svg><span>' + escapeHtml(t.outOfStock) + '</span></button>'
+          : qty === 0
+            ? '<button type="button" class="pm-add-btn" id="pmAddBtn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6h15l-1.5 9h-12z"/><path stroke-linecap="round" d="M6 6L5 3H2"/></svg><span>' + escapeHtml(t.addToCartFull) + '</span></button>'
+            : '<div class="pm-stepper"><button type="button" class="stepper-btn" id="pmDecBtn" data-qty-id="' + product.id + '" data-delta="-1" aria-label="' + escapeHtml(t.decreaseQty) + '">−</button>' +
+              '<span class="stepper-qty tabular-nums" id="pmStepperQty">' + qty + ' ' + escapeHtml(t.unitShort) + '</span>' +
+              '<button type="button" class="stepper-btn" id="pmIncBtn" data-qty-id="' + product.id + '" data-delta="1" aria-label="' + escapeHtml(t.increaseQty) + '"' + (qty >= stock ? ' disabled' : '') + '>+</button></div>' +
+              '<button type="button" class="pm-go-cart" id="pmGoCartBtn">' + escapeHtml(t.goToCart) + '</button>';
+
+        pmFooter.innerHTML = '<div class="pm-price-col"><span class="pm-price-label">' + escapeHtml(t.priceLabel) + ':</span><div class="pm-price-val tabular-nums">' + formatPrice(product.price) + ' <span>' + escapeHtml(t.currency) + '</span></div></div><div class="pm-actions">' + actionBlock + '</div>';
+
+        const stage = document.getElementById('galleryStage');
+        if (stage) {
+          let touchStartX = 0;
+          stage.addEventListener('touchstart', function (e) { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+          stage.addEventListener('touchend', function (e) {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(dx) > 36) {
+              activeSlideIdx = (activeSlideIdx + (dx < 0 ? 1 : -1) + gallery.length) % gallery.length;
+              haptic('light'); renderProductModal();
+            }
+          }, { passive: true });
+        }
+        const prevBtn = document.getElementById('galPrevBtn');
+        const nextBtn = document.getElementById('galNextBtn');
+        if (prevBtn) prevBtn.addEventListener('click', function () { activeSlideIdx = (activeSlideIdx - 1 + gallery.length) % gallery.length; haptic('light'); renderProductModal(); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { activeSlideIdx = (activeSlideIdx + 1) % gallery.length; haptic('light'); renderProductModal(); });
+
+        const pmAddBtn = document.getElementById('pmAddBtn');
+        if (pmAddBtn && !isOutOfStock) pmAddBtn.addEventListener('click', function () { addToCart(product.id, true); });
+        const pmDecBtn = document.getElementById('pmDecBtn');
+        if (pmDecBtn) pmDecBtn.addEventListener('click', function () { if (holdDidRepeat) { holdDidRepeat = false; return; } changeQty(product.id, -1); });
+        const pmIncBtn = document.getElementById('pmIncBtn');
+        if (pmIncBtn) pmIncBtn.addEventListener('click', function () { if (holdDidRepeat) { holdDidRepeat = false; return; } changeQty(product.id, 1); });
+        const pmGoCartBtn = document.getElementById('pmGoCartBtn');
+        if (pmGoCartBtn) pmGoCartBtn.addEventListener('click', function () { closeProductModal(); openBottomSheet(); });
+      }
+
+      function openProductModal(productId) {
+        activeProductId = productId; activeSlideIdx = 0; renderProductModal(); pmBody.scrollTop = 0;
+        productBackdrop.classList.add('open'); productModal.classList.add('open');
+        document.body.style.overflow = 'hidden'; haptic('light'); syncTelegramBackButton();
+      }
+      function closeProductModal() {
+        productBackdrop.classList.remove('open'); productModal.classList.remove('open'); activeProductId = null;
+        if (!cartSheet.classList.contains('open')) document.body.style.overflow = '';
+        syncTelegramBackButton();
+      }
+      function goToCategories() {
+        selectedCategoryId = null; haptic('light'); renderCatalogView(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function updateCartIndicators() {
+        const t = TRANSLATIONS[lang];
+        const stats = getCartStats();
+        headerCartBadge.textContent = stats.totalQty;
+        headerCartBadge.classList.toggle('visible', stats.totalQty > 0);
+        floatingCount.textContent = stats.totalQty + ' ' + t.unitShort;
+        floatingLabel.textContent = t.viewCart;
+        floatingTotal.textContent = formatPrice(stats.totalAmount) + ' ' + t.currency;
+        floatingCartWrap.classList.toggle('visible', stats.totalQty > 0 && !productModal.classList.contains('open'));
+      }
+
+      function renderBottomSheet() {
+        const t = TRANSLATIONS[lang];
+        if (confirmedOrder) {
+          sheetBody.innerHTML = '<div class="sheet-state-box"><div class="state-icon success"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></div>' +
+            '<h3 class="state-title">' + escapeHtml(t.confirmedTitle(confirmedOrder.orderId)) + '</h3>' +
+            '<p class="state-desc">' + escapeHtml(t.confirmedSubtitle) + ' ' + escapeHtml(t.confirmedTotalLabel) + ' <strong class="tabular-nums" style="color:#fff">' + formatPrice(confirmedOrder.total) + ' ' + escapeHtml(t.currency) + '</strong></p>' +
+            '<button type="button" class="back-catalog-btn" id="backToCatalogBtn">' + escapeHtml(t.backToCatalog) + '</button></div>';
+          document.getElementById('backToCatalogBtn').addEventListener('click', function () { confirmedOrder = null; closeBottomSheet(); });
+          return;
+        }
+        if (cart.length === 0) {
+          sheetBody.innerHTML = '<div class="sheet-state-box"><div class="state-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h15l-1.5 9h-12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6L5 3H2"/></svg></div>' +
+            '<div class="state-title">' + escapeHtml(t.emptyCartTitle) + '</div><p class="state-desc">' + escapeHtml(t.emptyCartDesc) + '</p></div>';
+          return;
+        }
+
+        const stats = getCartStats();
+        const isDelivery = checkoutState.delivery === 'Yetkazib berish';
+        const itemsHtml = cart.map(function (item) {
+          const locName = lang === 'ru' ? item.nameRu : item.name;
+          const stock = getProductStock(item.id);
+          return '<div class="cart-item"><div class="cart-item-img"><img src="' + escapeHtml(resolveAsset(item.image)) + '" data-orig-src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(locName) + '" /></div>' +
+            '<div class="cart-item-info"><div class="cart-item-name">' + escapeHtml(locName) + '</div><div class="cart-item-price tabular-nums" data-cart-sub-val="' + item.id + '">' + formatPrice(item.price * item.qty) + ' ' + escapeHtml(t.currency) + '</div></div>' +
+            '<div class="cart-item-controls"><button type="button" class="ci-btn" data-qty-id="' + item.id + '" data-delta="-1" aria-label="' + escapeHtml(t.decreaseQty) + '">−</button>' +
+            '<span class="ci-qty tabular-nums" data-cart-qty-val="' + item.id + '">' + item.qty + '</span>' +
+            '<button type="button" class="ci-btn" data-qty-id="' + item.id + '" data-delta="1" aria-label="' + escapeHtml(t.increaseQty) + '"' + (item.qty >= stock ? ' disabled' : '') + '>+</button></div></div>';
+        }).join('');
+
+        sheetBody.innerHTML = '<div class="cart-items-list">' + itemsHtml + '</div>' +
+          '<form class="checkout-section" id="checkoutForm" novalidate><h3 class="section-subtitle">' + escapeHtml(t.checkoutTitle) + '</h3>' +
+          '<div class="form-group"><label class="form-label" for="inputName">' + escapeHtml(t.nameLabel) + '</label><input id="inputName" class="form-input' + (fieldError === 'name' ? ' error' : '') + '" type="text" placeholder="' + escapeHtml(t.namePlaceholder) + '" value="' + escapeHtml(checkoutState.name) + '" /></div>' +
+          '<div class="form-group"><label class="form-label" for="inputPhone">' + escapeHtml(t.phoneLabel) + '</label><input id="inputPhone" class="form-input' + (fieldError === 'phone' ? ' error' : '') + '" type="tel" placeholder="+998 90 123 45 67" value="' + escapeHtml(checkoutState.phone) + '" /></div>' +
+          '<div class="form-group"><span class="form-label">' + escapeHtml(t.deliveryMethodLabel) + '</span><div class="segment-group">' +
+          '<button type="button" class="segment-btn' + (isDelivery ? ' active' : '') + '" data-delivery="Yetkazib berish">' + escapeHtml(t.deliveryCourier) + '</button>' +
+          '<button type="button" class="segment-btn' + (!isDelivery ? ' active' : '') + '" data-delivery="Olib ketish">' + escapeHtml(t.deliveryPickup) + '</button></div></div>' +
+          (isDelivery ? '<div class="form-group"><label class="form-label" for="inputAddress">' + escapeHtml(t.addressLabel) + '</label><input id="inputAddress" class="form-input' + (fieldError === 'address' ? ' error' : '') + '" type="text" placeholder="' + escapeHtml(t.addressPlaceholder) + '" value="' + escapeHtml(checkoutState.address) + '" /></div>' : '') +
+          '<div class="form-group"><span class="form-label">' + escapeHtml(t.paymentMethodLabel) + '</span><div class="segment-group cols-3">' +
+          '<button type="button" class="segment-btn' + (checkoutState.payment === 'Naqd' ? ' active' : '') + '" data-payment="Naqd">' + escapeHtml(t.paymentCash) + '</button>' +
+          '<button type="button" class="segment-btn' + (checkoutState.payment === 'Click' ? ' active' : '') + '" data-payment="Click">Click</button>' +
+          '<button type="button" class="segment-btn' + (checkoutState.payment === 'Payme' ? ' active' : '') + '" data-payment="Payme">Payme</button></div></div>' +
+          '<div class="order-summary"><span class="summary-label">' + escapeHtml(t.totalLabel) + '</span><span class="summary-total tabular-nums" id="cartSummaryTotal">' + formatPrice(stats.totalAmount) + ' <span>' + escapeHtml(t.currency) + '</span></span></div>' +
+          '<div class="form-error-msg' + (formErrorMsg ? ' visible' : '') + '" id="formErrorMsg">' + escapeHtml(formErrorMsg) + '</div>' +
+          '<button type="submit" class="submit-order-btn" id="submitOrderBtn"' + (isSubmitting ? ' disabled' : '') + '>' + escapeHtml(isSubmitting ? t.submittingOrder : t.submitOrder) + '</button></form>';
+
+        bindCheckoutEvents();
+      }
+
+      function bindCheckoutEvents() {
+        const inputName = document.getElementById('inputName');
+        const inputPhone = document.getElementById('inputPhone');
+        const inputAddress = document.getElementById('inputAddress');
+        const form = document.getElementById('checkoutForm');
+        if (inputName) inputName.addEventListener('input', function (e) { checkoutState.name = e.target.value; if (fieldError === 'name') fieldError = null; e.target.classList.remove('error'); });
+        if (inputPhone) inputPhone.addEventListener('input', function (e) { checkoutState.phone = e.target.value; if (fieldError === 'phone') fieldError = null; e.target.classList.remove('error'); });
+        if (inputAddress) inputAddress.addEventListener('input', function (e) { checkoutState.address = e.target.value; if (fieldError === 'address') fieldError = null; e.target.classList.remove('error'); });
+        if (form) form.addEventListener('submit', handleOrderSubmit);
+      }
+
+      async function handleOrderSubmit(e) {
+        e.preventDefault();
+        const t = TRANSLATIONS[lang];
+        const name = checkoutState.name.trim();
+        const phone = checkoutState.phone.trim();
+        const isDelivery = checkoutState.delivery === 'Yetkazib berish';
+        const address = isDelivery ? checkoutState.address.trim() : t.pickupAddressValue;
+
+        formErrorMsg = ''; fieldError = null;
+        if (!name) { fieldError = 'name'; formErrorMsg = t.errName; renderBottomSheet(); document.getElementById('inputName')?.focus(); return; }
+        if (!phone || phone.replace(/\D/g, '').length < 7) { fieldError = 'phone'; formErrorMsg = t.errPhone; renderBottomSheet(); document.getElementById('inputPhone')?.focus(); return; }
+        if (isDelivery && !address) { fieldError = 'address'; formErrorMsg = t.errAddress; renderBottomSheet(); document.getElementById('inputAddress')?.focus(); return; }
+
+        const stats = getCartStats();
+        isSubmitting = true;
+        renderBottomSheet();
+
+        try {
+          const response = await fetch('/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name, phone: phone, delivery: checkoutState.delivery, address: address, payment: checkoutState.payment, lang: lang,
+              items: cart.map(function (item) {
+                return { id: item.id, model: item.model, name: lang === 'ru' ? item.nameRu : item.name, price: item.price, qty: item.qty, subtotal: item.price * item.qty };
+              }),
+              total: stats.totalAmount, user_id: tgUser ? tgUser.id : null, tg_user: tgUser
+            })
+          });
+
+          const data = await response.json().catch(function () { return {}; });
+          if (response.status === 409 && data.error === 'insufficient_stock') {
+            if (data.stock && typeof data.stock === 'object') {
+              stockMap = data.stock;
+              clampCartToStock();
+            }
+            isSubmitting = false;
+            formErrorMsg = t.errInsufficientStock;
+            updateUI();
+            return;
+          }
+          if (!response.ok) throw new Error(data.error || 'Server error');
+
+          if (data.stock && typeof data.stock === 'object') stockMap = data.stock;
+          haptic('success');
+          showToast(t.toastAccepted);
+          confirmedOrder = { orderId: data.orderId || 'ONX-1001', total: stats.totalAmount };
+          cart = []; isSubmitting = false; updateUI();
+
+          if (tg && tg.initData) {
+            setTimeout(function () { tg.close(); }, 700);
+          }
+        } catch (_) {
+          isSubmitting = false;
+          formErrorMsg = t.errServer;
+          renderBottomSheet();
+        }
+      }
+
+      function applyRowScrollClarity() {
+        const cards = Array.prototype.slice.call(cardsGrid.querySelectorAll('.scroll-card'));
+        if (cards.length === 0) return;
+        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reducedMotion) {
+          cards.forEach(function (el) {
+            el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none';
+            const veil = el.querySelector('[data-scroll-veil]');
+            if (veil) veil.style.opacity = '0';
+          });
+          bottomMist.classList.add('hidden');
+          return;
+        }
+        const vh = window.innerHeight || 800;
+        const docHeight = document.documentElement.scrollHeight;
+        const remainingScroll = Math.max(0, docHeight - (window.scrollY + vh));
+        bottomMist.classList.toggle('hidden', remainingScroll <= 24);
+
+        const rows = [];
+        cards.forEach(function (el) {
+          const top = el.offsetTop, lastRow = rows[rows.length - 1];
+          if (lastRow && Math.abs(lastRow[0].offsetTop - top) <= 10) lastRow.push(el);
+          else rows.push([el]);
+        });
+        const startRevealY = vh * 0.95, fullClearY = vh * 0.62, span = Math.max(120, startRevealY - fullClearY);
+        const endOfPageBoost = remainingScroll < 140 ? 1 - remainingScroll / 140 : 0;
+
+        rows.forEach(function (rowCards, rowIndex) {
+          const rect = rowCards[0].getBoundingClientRect();
+          let rawProgress = (rowIndex === 0 && rect.top < vh * 0.85) ? 1 : Math.min(1, Math.max(0, (startRevealY - rect.top) / span));
+          if (endOfPageBoost > 0 && rect.top < vh * 0.96) rawProgress = Math.min(1, rawProgress + endOfPageBoost * (1 - rawProgress));
+          const eased = 1 - Math.pow(1 - rawProgress, 2.2);
+          const opacity = (0.14 + 0.86 * eased).toFixed(3);
+          const translateY = ((1 - eased) * 32).toFixed(2);
+          const scale = (0.92 + 0.08 * eased).toFixed(4);
+          const blurPx = ((1 - eased) * 8.5).toFixed(2);
+          const saturate = (0.65 + 0.35 * eased).toFixed(3);
+          const veilOpacity = ((1 - eased) * 0.92).toFixed(3);
+
+          rowCards.forEach(function (cardEl) {
+            cardEl.style.opacity = opacity;
+            cardEl.style.transform = 'translate3d(0, ' + translateY + 'px, 0) scale(' + scale + ')';
+            cardEl.style.filter = eased >= 0.995 ? 'none' : 'blur(' + blurPx + 'px) saturate(' + saturate + ')';
+            const veil = cardEl.querySelector('[data-scroll-veil]');
+            if (veil) veil.style.opacity = veilOpacity;
+          });
+        });
+      }
+
+      let scrollRafId = null;
+      function scheduleRowScrollClarity() {
+        if (scrollRafId !== null) return;
+        scrollRafId = window.requestAnimationFrame(function () { scrollRafId = null; applyRowScrollClarity(); });
+      }
+
+      function openBottomSheet() {
+        renderBottomSheet(); sheetBackdrop.classList.add('open'); cartSheet.classList.add('open');
+        document.body.style.overflow = 'hidden'; haptic('light'); syncTelegramBackButton();
+      }
+      function closeBottomSheet() {
+        sheetBackdrop.classList.remove('open'); cartSheet.classList.remove('open');
+        if (!productModal.classList.contains('open')) document.body.style.overflow = '';
+        syncTelegramBackButton();
+      }
+      function updateUI() {
+        syncLanguageMeta(); renderCatalogView(); updateCartIndicators();
+        if (productModal.classList.contains('open')) renderProductModal();
+        if (cartSheet.classList.contains('open')) renderBottomSheet();
+      }
+
+      brandHomeBtn.addEventListener('click', function () {
+        if (activeTab !== 'home') { selectedCategoryId = null; switchTab('home'); }
+        else if (selectedCategoryId) goToCategories();
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      navHomeBtn.addEventListener('click', function () {
+        if (activeTab === 'home' && selectedCategoryId) goToCategories();
+        else if (activeTab !== 'home') switchTab('home');
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      navAboutBtn.addEventListener('click', function () {
+        if (activeTab !== 'about') switchTab('about');
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      contactInstagram.addEventListener('click', function (e) {
+        haptic('light');
+        if (tg && tg.openLink) {
+          e.preventDefault();
+          try { tg.openLink('https://www.instagram.com/onex_uz/', { try_instant_view: false }); }
+          catch (_) { window.location.href = 'https://www.instagram.com/onex_uz/'; }
+        }
+      });
+      contactTelegram.addEventListener('click', function (e) {
+        haptic('light');
+        if (tg && tg.openTelegramLink) {
+          e.preventDefault();
+          try { tg.openTelegramLink('https://t.me/onex_by'); }
+          catch (_) { window.location.href = 'https://t.me/onex_by'; }
+        }
+      });
+      contactPhone.addEventListener('click', function () { haptic('light'); });
+      backToCatsBtn.addEventListener('click', goToCategories);
+
+      langBtnUz.addEventListener('click', function () {
+        if (lang === 'uz') return;
+        lang = 'uz'; saveLang('uz'); formErrorMsg = ''; haptic('light'); updateUI();
+      });
+      langBtnRu.addEventListener('click', function () {
+        if (lang === 'ru') return;
+        lang = 'ru'; saveLang('ru'); formErrorMsg = ''; haptic('light'); updateUI();
+      });
+
+      cardsGrid.addEventListener('click', function (e) {
+        const catCard = e.target.closest('[data-cat-id]');
+        if (catCard) { selectedCategoryId = catCard.getAttribute('data-cat-id'); haptic('light'); renderCatalogView(); window.scrollTo({ top: 0, behavior: 'auto' }); return; }
+        const addBtn = e.target.closest('[data-add-id]');
+        if (addBtn) { e.stopPropagation(); addToCart(Number(addBtn.getAttribute('data-add-id')), true); return; }
+        const qtyBtn = e.target.closest('[data-qty-id]');
+        if (qtyBtn) {
+          e.stopPropagation();
+          if (holdDidRepeat) { holdDidRepeat = false; return; }
+          changeQty(Number(qtyBtn.getAttribute('data-qty-id')), Number(qtyBtn.getAttribute('data-delta')));
+          return;
+        }
+        const productCard = e.target.closest('[data-open-product]');
+        if (productCard) openProductModal(Number(productCard.getAttribute('data-open-product')));
+      });
+
+      pmBody.addEventListener('click', function (e) {
+        const thumbBtn = e.target.closest('[data-thumb-idx]');
+        if (thumbBtn) { activeSlideIdx = Number(thumbBtn.getAttribute('data-thumb-idx')); haptic('light'); renderProductModal(); }
+      });
+      closeProductBtn.addEventListener('click', closeProductModal);
+      productBackdrop.addEventListener('click', closeProductModal);
+
+      sheetBody.addEventListener('click', function (e) {
+        const qtyBtn = e.target.closest('[data-qty-id]');
+        if (qtyBtn) {
+          if (holdDidRepeat) { holdDidRepeat = false; return; }
+          changeQty(Number(qtyBtn.getAttribute('data-qty-id')), Number(qtyBtn.getAttribute('data-delta')));
+          return;
+        }
+        const deliveryBtn = e.target.closest('[data-delivery]');
+        if (deliveryBtn) { checkoutState.delivery = deliveryBtn.getAttribute('data-delivery'); haptic('light'); renderBottomSheet(); return; }
+        const paymentBtn = e.target.closest('[data-payment]');
+        if (paymentBtn) { checkoutState.payment = paymentBtn.getAttribute('data-payment'); haptic('light'); renderBottomSheet(); }
+      });
+
+      document.addEventListener('pointerdown', function (e) {
+        if (e.button !== undefined && e.button !== 0) return;
+        const qtyBtn = e.target.closest('[data-qty-id]');
+        if (!qtyBtn) return;
+        const id = Number(qtyBtn.getAttribute('data-qty-id'));
+        const delta = Number(qtyBtn.getAttribute('data-delta'));
+        if (!id || !delta) return;
+        startHoldRepeat(id, delta);
+      });
+      document.addEventListener('pointerup', releaseHoldRepeat);
+      document.addEventListener('pointercancel', releaseHoldRepeat);
+      window.addEventListener('blur', releaseHoldRepeat);
+      document.addEventListener('contextmenu', function (e) { if (e.target.closest('[data-qty-id]')) e.preventDefault(); });
+
+      headerCartBtn.addEventListener('click', openBottomSheet);
+      floatingCartBtn.addEventListener('click', openBottomSheet);
+      closeSheetBtn.addEventListener('click', closeBottomSheet);
+      sheetBackdrop.addEventListener('click', closeBottomSheet);
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          if (cartSheet.classList.contains('open')) closeBottomSheet();
+          else if (productModal.classList.contains('open')) closeProductModal();
+        }
+      });
+      window.addEventListener('scroll', scheduleRowScrollClarity, { passive: true });
+      window.addEventListener('resize', scheduleRowScrollClarity, { passive: true });
+
+      updateUI();
+      fetchStock();
+    })();
+  </script>
+</body>
+</html>
